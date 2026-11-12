@@ -1,0 +1,15 @@
+{
+  "name": "우리 둘만의 공간",
+  "short_name": "우리 둘만의 공간",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#FFFDF9",
+  "theme_color": "#EC4899",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

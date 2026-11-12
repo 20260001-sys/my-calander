@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>우리 둘만의 공간 💕 - 커플 다이어리</title>
+  <!-- Google Fonts & Tailwind CDN -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              ivory: '#FFFDF9',
+              ivoryDark: '#F7F3EC',
+              pinkLight: '#FFF0F3',
+              pink: '#FBCFE8',
+              pinkMedium: '#F472B6',
+              pinkDeep: '#EC4899',
+              textPrimary: '#4A3E3D',
+              textSecondary: '#8C7E7E',
+            }
+          },
+          fontFamily: {
+            sans: ['Pretendard', 'Apple SD Gothic Neo', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F8F5F0;
+      color: #4A3E3D;
+      font-family: 'Pretendard', sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+    /* iOS & 모바일 스크롤 부드럽게 */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .tab-active {
+      color: #EC4899;
+      transform: translateY(-2px);
+      transition: all 0.2s ease;
+    }
+    .tab-inactive {
+      color: #9C8E8E;
+      transition: all 0.2s ease;
+    }
+  </style>
+</head>
+<body class="flex justify-center items-center min-h-screen p-0 sm:p-4">
+
+  <!-- 모바일 뷰 컨테이너 (스마트폰 형태 목업) -->
+  <div class="w-full max-w-md h-[100dvh] sm:h-[844px] bg-[#FFFDF9] sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col relative border-0 sm:border-[8px] sm:border-[#F2ECE4]">
+    
+    <!-- 상단 상태바 & 헤더 영역 -->
+    <header class="bg-gradient-to-b from-[#FFF0F3] to-[#FFFDF9] px-5 pt-4 pb-3 border-b border-[#F7E7EB] shrink-0">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-full bg-[#FFE4E9] flex items-center justify-center text-lg shadow-sm border border-white">
+            🧸
+          </div>
+          <div class="text-xs font-semibold text-[#EC4899] bg-[#FFEBF0] px-2.5 py-0.5 rounded-full border border-[#FED7E2]">
+            D+100 💕
+          </div>
+        </div>
+        <div class="text-center">
+          <h1 class="text-base font-bold text-[#4A3E3D] tracking-tight">지훈 & 서연</h1>
+          <p class="text-[11px] text-[#A89898]">2026.08.05 ~ 사랑 진행중</p>
+        </div>
+        <button onclick="alert('알림 설정 및 프로필 변경 기능 준비 중입니다 :)')" class="w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-sm shadow-sm border border-[#F2ECE4] text-[#8C7E7E] transition">
+          🔔
+        </button>
+      </div>
+    </header>
+
+    <!-- 메인 컨텐츠 영역 (탭에 따라 전환) -->
+    <main class="flex-1 overflow-y-auto no-scrollbar p-5 pb-24">
+      
+      <!-- 1. 일정 탭 화면 -->
+      <section id="tab-schedule" class="space-y-5">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-[#4A3E3D]">우리의 일정 📅</h2>
+            <p class="text-xs text-[#8C7E7E]">함께할 소중한 약속들을 챙겨보세요</p>
+          </div>
+          <button onclick="addSchedulePrompt()" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 transition">
+            <span>+ 일정 등록</span>
+          </button>
+        </div>
+
+        <!-- 미니 캘린더 카드 -->
+        <div class="bg-white rounded-2xl p-4 shadow-sm border border-[#F5EBE6]">
+          <div class="flex justify-between items-center mb-3">
+            <span class="font-bold text-sm text-[#4A3E3D]">2026년 11월</span>
+            <div class="flex gap-2 text-xs text-[#8C7E7E]">
+              <button class="hover:text-black">◀</button>
+              <span class="text-[#EC4899] font-semibold">오늘</span>
+              <button class="hover:text-black">▶</button>
+            </div>
+          </div>
+          <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2 font-medium text-[#A89898]">
+            <span class="text-rose-400">일</span>
+            <span>월</span>
+            <span>화</span>
+            <span>수</span>
+            <span>목</span>
+            <span>금</span>
+            <span class="text-blue-400">토</span>
+          </div>
+          <!-- 달력 일자 그리드 -->
+          <div class="grid grid-cols-7 gap-1 text-center text-xs text-[#5C4F4E]">
+            <span class="p-2 text-gray-300">28</span>
+            <span class="p-2 text-gray-300">29</span>
+            <span class="p-2 text-gray-300">30</span>
+            <span class="p-2">1</span>
+            <span class="p-2">2</span>
+            <span class="p-2">3</span>
+            <span class="p-2 text-blue-500">4</span>
+            <span class="p-2 text-rose-500">5</span>
+            <span class="p-2">6</span>
+            <span class="p-2">7</span>
+            <span class="p-2">8</span>
+            <span class="p-2">9</span>
+            <span class="p-2">10</span>
+            <span class="p-2 text-blue-500">11</span>
+            <!-- 오늘 12일 강조 -->
+            <div class="p-2 bg-[#FFE4E9] text-[#EC4899] font-bold rounded-xl relative shadow-sm">
+              12
+              <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-[#EC4899] rounded-full"></span>
+            </div>
+            <span class="p-2">13</span>
+            <div class="p-2 relative font-medium">
+              14
+              <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 text-[8px]">💖</span>
+            </div>
+            <div class="p-2 text-rose-500 relative font-medium">
+              15
+              <span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 w-1 h-1 bg-rose-400 rounded-full"></span>
+            </div>
+            <span class="p-2">16</span>
+            <span class="p-2">17</span>
+            <span class="p-2">18</span>
+            <span class="p-2">19</span>
+            <span class="p-2">20</span>
+            <span class="p-2 text-blue-500">21</span>
+            <span class="p-2 text-rose-500">22</span>
+            <span class="p-2">23</span>
+            <span class="p-2">24</span>
+            <span class="p-2">25</span>
+            <span class="p-2">26</span>
+            <span class="p-2">27</span>
+            <span class="p-2 text-blue-500">28</span>
+            <span class="p-2 text-rose-500">29</span>
+            <span class="p-2">30</span>
+            <span class="p-2 text-gray-300">1</span>
+            <span class="p-2 text-gray-300">2</span>
+          </div>
+        </div>
+
+        <!-- 다가오는 일정 목록 -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-[#8C7E7E] uppercase tracking-wider">다가오는 데이트</h3>
+          
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F7E7EB] shadow-sm flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#FFF0F3] text-[#EC4899] flex flex-col items-center justify-center font-bold text-xs shrink-0 border border-[#FCD5DE]">
+              <span>11.14</span>
+              <span class="text-[9px] font-normal">토</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-[#4A3E3D]">성수동 카페거리 데이트 ☕</span>
+                <span class="bg-[#FFF0F3] text-[#EC4899] text-[10px] px-1.5 py-0.5 rounded font-medium">D-2</span>
+              </div>
+              <p class="text-[11px] text-[#8C7E7E] mt-0.5">오후 2시 성수역 3번 출구에서 만나기!</p>
+            </div>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F7E7EB] shadow-sm flex items-start gap-3">
+            <div class="w-10 h-10 rounded-xl bg-[#FFF8E7] text-[#D97706] flex flex-col items-center justify-center font-bold text-xs shrink-0 border border-[#FDE68A]">
+              <span>11.15</span>
+              <span class="text-[9px] font-normal">일</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2">
+                <span class="text-xs font-bold text-[#4A3E3D]">영화관 심야 데이트 🎬</span>
+                <span class="bg-[#FEF3C7] text-[#B45309] text-[10px] px-1.5 py-0.5 rounded font-medium">D-3</span>
+              </div>
+              <p class="text-[11px] text-[#8C7E7E] mt-0.5">CGV 용산아이파크몰 (팝콘은 달콤한 맛🍿)</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2. 기념일 탭 화면 -->
+      <section id="tab-anniversary" class="space-y-5 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-[#4A3E3D]">우리의 기념일 💖</h2>
+            <p class="text-xs text-[#8C7E7E]">지나온 날들과 앞으로 맞이할 설렘</p>
+          </div>
+          <button onclick="addAnniversaryPrompt()" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 transition">
+            <span>+ 기념일 추가</span>
+          </button>
+        </div>
+
+        <!-- 대표 D-Day 메인 카드 -->
+        <div class="bg-gradient-to-br from-[#FFE4E9] via-[#FFF0F3] to-[#FFFDF9] rounded-3xl p-5 border border-[#FCD5DE] shadow-sm text-center relative overflow-hidden">
+          <div class="absolute -right-4 -bottom-4 text-7xl opacity-20">💑</div>
+          <span class="inline-block bg-white/80 text-[#EC4899] font-bold text-xs px-3 py-1 rounded-full mb-2 shadow-xs">
+            처음 손잡은 날로부터
+          </span>
+          <div class="text-4xl font-extrabold text-[#EC4899] tracking-tight my-1">
+            100일 💕
+          </div>
+          <p class="text-xs text-[#8C7E7E]">2026년 8월 5일 시작</p>
+          <div class="mt-4 pt-3 border-t border-[#FAD2DC] flex justify-around text-xs text-[#6B5A59]">
+            <div>
+              <span class="block text-[10px] text-[#A89898]">지나온 시간</span>
+              <span class="font-bold">2,400시간</span>
+            </div>
+            <div class="border-r border-[#FAD2DC]"></div>
+            <div>
+              <span class="block text-[10px] text-[#A89898]">다음 200일까지</span>
+              <span class="font-bold text-[#EC4899]">100일 남음</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- 기념일 타임라인 리스트 -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-[#8C7E7E] uppercase tracking-wider">기념일 캘린더</h3>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-[#FFF0F3] text-lg flex items-center justify-center border border-[#FED7E2]">
+                🎂
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-[#4A3E3D]">서연이 생일</h4>
+                <p class="text-[11px] text-[#8C7E7E]">12월 24일</p>
+              </div>
+            </div>
+            <span class="bg-[#FFE4E9] text-[#EC4899] text-xs font-bold px-2.5 py-1 rounded-full">
+              D-42
+            </span>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-[#FFF0F3] text-lg flex items-center justify-center border border-[#FED7E2]">
+                🎄
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-[#4A3E3D]">함께 맞는 첫 크리스마스</h4>
+                <p class="text-[11px] text-[#8C7E7E]">12월 25일</p>
+              </div>
+            </div>
+            <span class="bg-[#FFE4E9] text-[#EC4899] text-xs font-bold px-2.5 py-1 rounded-full">
+              D-43
+            </span>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-[#FFF8E7] text-lg flex items-center justify-center border border-[#FDE68A]">
+                💍
+              </div>
+              <div>
+                <h4 class="text-xs font-bold text-[#4A3E3D]">우리의 1주년 (365일)</h4>
+                <p class="text-[11px] text-[#8C7E7E]">2027년 8월 5일</p>
+              </div>
+            </div>
+            <span class="bg-[#FEF3C7] text-[#B45309] text-xs font-bold px-2.5 py-1 rounded-full">
+              D-265
+            </span>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. 앨범 탭 화면 -->
+      <section id="tab-album" class="space-y-5 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-[#4A3E3D]">추억 앨범 🖼️</h2>
+            <p class="text-xs text-[#8C7E7E]">함께 웃고 설렜던 순간들의 기록</p>
+          </div>
+          <button onclick="alert('사진 업로드 기능 준비 중입니다! 📸')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 transition">
+            <span>+ 사진 올리기</span>
+          </button>
+        </div>
+
+        <!-- 사진 갤러리 그리드 -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- 앨범 카드 1 -->
+          <div class="bg-white p-2.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex flex-col group cursor-pointer hover:shadow-md transition">
+            <div class="h-36 rounded-xl bg-gradient-to-tr from-pink-200 via-rose-100 to-amber-100 flex items-center justify-center overflow-hidden relative">
+              <span class="text-3xl">🌸</span>
+              <span class="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded-md">한강 공원</span>
+            </div>
+            <div class="pt-2 px-1">
+              <h4 class="text-xs font-bold text-[#4A3E3D] truncate">첫 봄 벚꽃 피크닉</h4>
+              <p class="text-[10px] text-[#8C7E7E]">2026.10.12</p>
+            </div>
+          </div>
+
+          <!-- 앨범 카드 2 -->
+          <div class="bg-white p-2.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex flex-col group cursor-pointer hover:shadow-md transition">
+            <div class="h-36 rounded-xl bg-gradient-to-tr from-sky-200 via-teal-100 to-rose-100 flex items-center justify-center overflow-hidden relative">
+              <span class="text-3xl">🏖️</span>
+              <span class="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded-md">제주 바다</span>
+            </div>
+            <div class="pt-2 px-1">
+              <h4 class="text-xs font-bold text-[#4A3E3D] truncate">제주도 푸른 바다</h4>
+              <p class="text-[10px] text-[#8C7E7E]">2026.09.20</p>
+            </div>
+          </div>
+
+          <!-- 앨범 카드 3 -->
+          <div class="bg-white p-2.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex flex-col group cursor-pointer hover:shadow-md transition">
+            <div class="h-36 rounded-xl bg-gradient-to-tr from-amber-200 via-orange-100 to-pink-100 flex items-center justify-center overflow-hidden relative">
+              <span class="text-3xl">☕</span>
+              <span class="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded-md">북촌 한옥</span>
+            </div>
+            <div class="pt-2 px-1">
+              <h4 class="text-xs font-bold text-[#4A3E3D] truncate">비 오는 날 따뜻한 라떼</h4>
+              <p class="text-[10px] text-[#8C7E7E]">2026.08.30</p>
+            </div>
+          </div>
+
+          <!-- 앨범 카드 4 -->
+          <div class="bg-white p-2.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex flex-col group cursor-pointer hover:shadow-md transition">
+            <div class="h-36 rounded-xl bg-gradient-to-tr from-purple-200 via-pink-100 to-rose-100 flex items-center justify-center overflow-hidden relative">
+              <span class="text-3xl">🎡</span>
+              <span class="absolute top-2 right-2 bg-black/40 text-white text-[9px] px-1.5 py-0.5 rounded-md">놀이공원</span>
+            </div>
+            <div class="pt-2 px-1">
+              <h4 class="text-xs font-bold text-[#4A3E3D] truncate">회전목마 앞 인증샷</h4>
+              <p class="text-[10px] text-[#8C7E7E]">2026.08.15</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. 편지 탭 화면 -->
+      <section id="tab-letter" class="space-y-5 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-bold text-[#4A3E3D]">둘만의 편지함 💌</h2>
+            <p class="text-xs text-[#8C7E7E]">서로에게 전하는 진심 어린 마음</p>
+          </div>
+          <button onclick="writeLetterPrompt()" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm flex items-center gap-1 transition">
+            <span>+ 편지 쓰기</span>
+          </button>
+        </div>
+
+        <!-- 도착한 새 편지 알림 카드 -->
+        <div class="bg-[#FFF0F3] border border-[#FCD5DE] p-4 rounded-3xl flex items-center gap-3.5 shadow-sm">
+          <div class="w-12 h-12 rounded-2xl bg-white flex items-center justify-center text-2xl shadow-xs border border-[#FED7E2] shrink-0">
+            ✉️
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-1.5">
+              <span class="text-xs font-bold text-[#4A3E3D]">100일 기념 비밀 편지</span>
+              <span class="w-2 h-2 rounded-full bg-[#EC4899] animate-pulse"></span>
+            </div>
+            <p class="text-[11px] text-[#8C7E7E] mt-0.5">지훈이가 서연이에게 보낸 편지</p>
+          </div>
+          <button onclick="openLetterModal()" class="bg-white text-[#EC4899] font-bold text-xs px-3 py-1.5 rounded-xl border border-[#FCD5DE] shadow-xs hover:bg-[#FFE4E9] transition">
+            열어보기
+          </button>
+        </div>
+
+        <!-- 지난 편지 보관 목록 -->
+        <div class="space-y-3">
+          <h3 class="text-xs font-bold text-[#8C7E7E] uppercase tracking-wider">주고받은 편지 목록</h3>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex items-center justify-between cursor-pointer hover:border-[#FCD5DE] transition" onclick="openLetterModal()">
+            <div class="flex items-center gap-3">
+              <div class="text-xl">💌</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#4A3E3D]">처음으로 손잡던 날의 일기</h4>
+                <p class="text-[10px] text-[#A89898]">2026.08.05 · 보낸 사람: 서연</p>
+              </div>
+            </div>
+            <span class="text-xs text-[#EC4899] font-semibold">읽음 ✓</span>
+          </div>
+
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex items-center justify-between cursor-pointer hover:border-[#FCD5DE] transition" onclick="alert('50일 편지 내용: \n\n 벌써 50일이라니 시간 정말 빠르다! 항상 곁에서 웃어줘서 고마워 사랑해❤️')">
+            <div class="flex items-center gap-3">
+              <div class="text-xl">💌</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#4A3E3D]">50일 기념 소소한 고백</h4>
+                <p class="text-[10px] text-[#A89898]">2026.09.23 · 보낸 사람: 지훈</p>
+              </div>
+            </div>
+            <span class="text-xs text-[#EC4899] font-semibold">읽음 ✓</span>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- 하단 고정 탭 바: [일정, 기념일, 앨범, 편지] -->
+    <nav class="absolute bottom-0 left-0 right-0 bg-[#FFFDF9]/95 backdrop-blur-md border-t border-[#F2ECE4] px-4 py-2.5 z-20 shadow-lg">
+      <div class="flex justify-around items-center">
+        <!-- 1. 일정 버튼 -->
+        <button id="nav-schedule" onclick="switchTab('schedule')" class="flex flex-col items-center justify-center py-1 px-3 tab-active">
+          <span class="text-xl mb-0.5">📅</span>
+          <span class="text-[11px] font-bold">일정</span>
+        </button>
+
+        <!-- 2. 기념일 버튼 -->
+        <button id="nav-anniversary" onclick="switchTab('anniversary')" class="flex flex-col items-center justify-center py-1 px-3 tab-inactive">
+          <span class="text-xl mb-0.5">💖</span>
+          <span class="text-[11px] font-bold">기념일</span>
+        </button>
+
+        <!-- 3. 앨범 버튼 -->
+        <button id="nav-album" onclick="switchTab('album')" class="flex flex-col items-center justify-center py-1 px-3 tab-inactive">
+          <span class="text-xl mb-0.5">🖼️</span>
+          <span class="text-[11px] font-bold">앨범</span>
+        </button>
+
+        <!-- 4. 편지 버튼 -->
+        <button id="nav-letter" onclick="switchTab('letter')" class="flex flex-col items-center justify-center py-1 px-3 tab-inactive">
+          <span class="text-xl mb-0.5">💌</span>
+          <span class="text-[11px] font-bold">편지</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- 편지 열람 팝업 모달 -->
+    <div id="letter-modal" class="fixed inset-0 bg-black/40 backdrop-blur-xs flex items-center justify-center p-4 z-50 hidden">
+      <div class="bg-[#FFFDF9] rounded-3xl max-w-sm w-full p-6 shadow-2xl border border-[#FCD5DE] relative animate-fade-in">
+        <div class="text-center mb-4">
+          <span class="text-3xl">💌</span>
+          <h3 class="text-base font-bold text-[#4A3E3D] mt-2">100일 기념 비밀 편지</h3>
+          <p class="text-xs text-[#8C7E7E]">From. 지훈</p>
+        </div>
+        <div class="bg-[#FFF0F3] rounded-2xl p-4 text-xs text-[#5C4F4E] leading-relaxed max-h-48 overflow-y-auto border border-[#FED7E2]">
+          안녕 서연아! 벌써 우리가 만난 지 100일이 되었네.<br><br>
+          처음 만났던 날 떨리던 순간이 아직도 생생한데, 매일 너와 함께하면서 하루하루가 너무 따뜻하고 행복했어.<br><br>
+          앞으로 200일, 1년, 10년이 지나도 지금처럼 서로를 아끼고 예쁜 추억 많이 만들어가자. 항상 고맙고 사랑해! 💕
+        </div>
+        <button onclick="closeLetterModal()" class="w-full mt-4 bg-[#EC4899] text-white py-2.5 rounded-xl font-bold text-xs hover:bg-[#DB2777] transition shadow-sm">
+          닫기
+        </button>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- 간단한 탭 전환 스크립트 -->
+  <script>
+    function switchTab(tabId) {
+      const tabs = ['schedule', 'anniversary', 'album', 'letter'];
+      tabs.forEach(tab => {
+        const sec = document.getElementById(`tab-${tab}`);
+        const btn = document.getElementById(`nav-${tab}`);
+        if (tab === tabId) {
+          sec.classList.remove('hidden');
+          btn.classList.add('tab-active');
+          btn.classList.remove('tab-inactive');
+        } else {
+          sec.classList.add('hidden');
+          btn.classList.remove('tab-active');
+          btn.classList.add('tab-inactive');
+        }
+      });
+    }
+
+    function openLetterModal() {
+      document.getElementById('letter-modal').classList.remove('hidden');
+    }
+
+    function closeLetterModal() {
+      document.getElementById('letter-modal').classList.add('hidden');
+    }
+
+    function addSchedulePrompt() {
+      const title = prompt("새로운 데이트 일정을 입력해주세요 (예: 영화관 데이트, 맛집 투어):");
+      if (title) {
+        alert(`'${title}' 일정이 등록되었습니다! (현재는 미리보기 모드입니다)`);
+      }
+    }
+
+    function addAnniversaryPrompt() {
+      const title = prompt("새로운 기념일을 입력해주세요 (예: 200일, 커플링 맞춘 날):");
+      if (title) {
+        alert(`'${title}' 기념일이 등록되었습니다! (현재는 미리보기 모드입니다)`);
+      }
+    }
+
+    function writeLetterPrompt() {
+      const content = prompt("상대방에게 남길 사랑의 메시지를 적어주세요:");
+      if (content) {
+        alert("편지가 둘만의 편지함에 안전하게 보관되었습니다! 💌");
+      }
+    }
+  </script>
+</body>
+</html>
