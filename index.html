@@ -51,7 +51,7 @@
           <h1 id="header-couple-names" class="text-base font-bold text-[#4A3E3D] tracking-tight">커플 설정하기</h1>
           <p id="header-start-date" class="text-[11px] text-[#A89898]">터치해서 내 닉네임과 시작일 입력</p>
         </div>
-        <button onclick="openSettingsModal()" class="w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-sm shadow-sm border border-[#F2ECE4] text-[#8C7E7E] transition relative">
+        <button type="button" onclick="openSettingsModal()" class="w-9 h-9 rounded-full bg-white/80 hover:bg-white flex items-center justify-center text-sm shadow-sm border border-[#F2ECE4] text-[#8C7E7E] transition relative">
           🔔
           <span id="push-dot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400"></span>
         </button>
@@ -68,7 +68,7 @@
             <h2 class="text-lg font-bold text-[#4A3E3D]">우리의 일정 📅</h2>
             <p class="text-xs text-[#8C7E7E]">함께할 소중한 약속들을 챙겨보세요</p>
           </div>
-          <button onclick="openModal('modal-schedule')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+          <button type="button" onclick="openModal('modal-schedule')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
             + 일정 등록
           </button>
         </div>
@@ -78,9 +78,9 @@
           <div class="flex justify-between items-center mb-3">
             <span id="calendar-month-label" class="font-bold text-sm text-[#4A3E3D]">2026년 11월</span>
             <div class="flex gap-2 text-xs text-[#8C7E7E]">
-              <button onclick="changeMonth(-1)" class="hover:text-black px-1">◀</button>
-              <button onclick="resetToToday()" class="text-[#EC4899] font-semibold">오늘</button>
-              <button onclick="changeMonth(1)" class="hover:text-black px-1">▶</button>
+              <button type="button" onclick="changeMonth(-1)" class="hover:text-black px-1">◀</button>
+              <button type="button" onclick="resetToToday()" class="text-[#EC4899] font-semibold">오늘</button>
+              <button type="button" onclick="changeMonth(1)" class="hover:text-black px-1">▶</button>
             </div>
           </div>
           <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2 font-medium text-[#A89898]">
@@ -105,7 +105,7 @@
             <h2 class="text-lg font-bold text-[#4A3E3D]">우리의 기념일 💖</h2>
             <p class="text-xs text-[#8C7E7E]">지나온 날들과 앞으로 맞이할 설렘</p>
           </div>
-          <button onclick="openModal('modal-anniversary')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+          <button type="button" onclick="openModal('modal-anniversary')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
             + 기념일 추가
           </button>
         </div>
@@ -130,7 +130,7 @@
             <h2 class="text-lg font-bold text-[#4A3E3D]">추억 앨범 🖼️</h2>
             <p class="text-xs text-[#8C7E7E]">함께 웃고 설렜던 순간들의 기록</p>
           </div>
-          <button onclick="openModal('modal-album')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+          <button type="button" onclick="openModal('modal-album')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
             + 사진 올리기
           </button>
         </div>
@@ -146,7 +146,7 @@
             <h2 class="text-lg font-bold text-[#4A3E3D]">둘만의 편지함 💌</h2>
             <p class="text-xs text-[#8C7E7E]">서로에게 전하는 진심 어린 마음</p>
           </div>
-          <button onclick="openModal('modal-letter')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+          <button type="button" onclick="openModal('modal-letter')" class="bg-[#EC4899] hover:bg-[#DB2777] text-white text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
             + 편지 쓰기
           </button>
         </div>
@@ -159,16 +159,16 @@
     <!-- 하단 탭 바 -->
     <nav class="absolute bottom-0 left-0 right-0 bg-[#FFFDF9]/95 backdrop-blur-md border-t border-[#F2ECE4] px-4 py-2.5 z-20 shadow-lg">
       <div class="flex justify-around items-center">
-        <button id="nav-schedule" onclick="switchTab('schedule')" class="flex flex-col items-center py-1 px-3 tab-active">
+        <button type="button" id="nav-schedule" onclick="switchTab('schedule')" class="flex flex-col items-center py-1 px-3 tab-active">
           <span class="text-xl mb-0.5">📅</span><span class="text-[11px] font-bold">일정</span>
         </button>
-        <button id="nav-anniversary" onclick="switchTab('anniversary')" class="flex flex-col items-center py-1 px-3 tab-inactive">
+        <button type="button" id="nav-anniversary" onclick="switchTab('anniversary')" class="flex flex-col items-center py-1 px-3 tab-inactive">
           <span class="text-xl mb-0.5">💖</span><span class="text-[11px] font-bold">기념일</span>
         </button>
-        <button id="nav-album" onclick="switchTab('album')" class="flex flex-col items-center py-1 px-3 tab-inactive">
+        <button type="button" id="nav-album" onclick="switchTab('album')" class="flex flex-col items-center py-1 px-3 tab-inactive">
           <span class="text-xl mb-0.5">🖼️</span><span class="text-[11px] font-bold">앨범</span>
         </button>
-        <button id="nav-letter" onclick="switchTab('letter')" class="flex flex-col items-center py-1 px-3 tab-inactive">
+        <button type="button" id="nav-letter" onclick="switchTab('letter')" class="flex flex-col items-center py-1 px-3 tab-inactive">
           <span class="text-xl mb-0.5">💌</span><span class="text-[11px] font-bold">편지</span>
         </button>
       </div>
@@ -192,13 +192,13 @@
             <input id="input-start-date" type="date" class="w-full mt-1 px-3 py-2 rounded-xl border border-[#F2ECE4] bg-white">
           </div>
         </div>
-        <button onclick="enablePushNotifications()" class="w-full bg-[#FFF0F3] text-[#EC4899] border border-[#FCD5DE] py-2.5 rounded-xl font-bold text-xs hover:bg-[#FFE4E9] transition">
+        <button type="button" onclick="enablePushNotifications()" class="w-full bg-[#FFF0F3] text-[#EC4899] border border-[#FCD5DE] py-2.5 rounded-xl font-bold text-xs hover:bg-[#FFE4E9] transition">
           🔔 이 스마트폰 푸시 알림 허용하기
         </button>
         <p id="push-status-text" class="text-[11px] text-center text-[#8C7E7E]">알림 상태: 확인 필요</p>
         <div class="flex gap-2 pt-1">
-          <button onclick="closeModal('modal-settings')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">닫기</button>
-          <button onclick="saveProfileSettings()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">저장하기</button>
+          <button type="button" onclick="closeModal('modal-settings')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">닫기</button>
+          <button type="button" onclick="saveProfileSettings()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">저장하기</button>
         </div>
       </div>
     </div>
@@ -214,8 +214,8 @@
           <input id="sched-memo" type="text" placeholder="메모 (예: 3번 출구에서 만나기)" class="w-full px-3 py-2 rounded-xl border border-[#F2ECE4] bg-white">
         </div>
         <div class="flex gap-2">
-          <button onclick="closeModal('modal-schedule')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
-          <button onclick="submitSchedule()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">등록</button>
+          <button type="button" onclick="closeModal('modal-schedule')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
+          <button type="button" onclick="submitSchedule()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">등록</button>
         </div>
       </div>
     </div>
@@ -229,8 +229,8 @@
           <input id="anniv-date" type="date" class="w-full px-3 py-2 rounded-xl border border-[#F2ECE4] bg-white">
         </div>
         <div class="flex gap-2">
-          <button onclick="closeModal('modal-anniversary')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
-          <button onclick="submitAnniversary()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">추가</button>
+          <button type="button" onclick="closeModal('modal-anniversary')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
+          <button type="button" onclick="submitAnniversary()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">추가</button>
         </div>
       </div>
     </div>
@@ -246,8 +246,8 @@
           <input id="album-date" type="date" class="w-full px-3 py-2 rounded-xl border border-[#F2ECE4] bg-white">
         </div>
         <div class="flex gap-2">
-          <button onclick="closeModal('modal-album')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
-          <button id="btn-upload-album" onclick="submitAlbum()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">올리기</button>
+          <button type="button" onclick="closeModal('modal-album')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
+          <button type="button" id="btn-upload-album" onclick="submitAlbum()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">올리기</button>
         </div>
       </div>
     </div>
@@ -261,8 +261,8 @@
           <textarea id="letter-content" rows="5" placeholder="상대방에게 전하고 싶은 마음을 적어보세요..." class="w-full px-3 py-2 rounded-xl border border-[#F2ECE4] bg-white"></textarea>
         </div>
         <div class="flex gap-2">
-          <button onclick="closeModal('modal-letter')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
-          <button onclick="submitLetter()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">보내기</button>
+          <button type="button" onclick="closeModal('modal-letter')" class="flex-1 bg-gray-100 py-2.5 rounded-xl text-xs font-bold">취소</button>
+          <button type="button" onclick="submitLetter()" class="flex-1 bg-[#EC4899] text-white py-2.5 rounded-xl text-xs font-bold">보내기</button>
         </div>
       </div>
     </div>
@@ -276,42 +276,37 @@
           <p id="read-letter-sender" class="text-xs text-[#8C7E7E]">From.</p>
         </div>
         <div id="read-letter-body" class="bg-[#FFF0F3] rounded-2xl p-4 text-xs text-[#5C4F4E] leading-relaxed max-h-56 overflow-y-auto border border-[#FED7E2] whitespace-pre-line"></div>
-        <button onclick="closeModal('modal-read-letter')" class="w-full mt-4 bg-[#EC4899] text-white py-2.5 rounded-xl font-bold text-xs">닫기</button>
+        <button type="button" onclick="closeModal('modal-read-letter')" class="w-full mt-4 bg-[#EC4899] text-white py-2.5 rounded-xl font-bold text-xs">닫기</button>
       </div>
     </div>
 
   </div>
 
   <script>
-    // =========================================================================
-    // ★ [필수 수정] 아래 두 줄의 큰따옴표 안에 본인 Supabase 열쇠를 붙여넣으세요!
-    // =========================================================================
-const SUPABASE_URL = "https://ybgwmwrohjzwxinqvpfp.supabase.co";
+    const SUPABASE_URL = "https://ybgwmwrohjzwxinqvpfp.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_0v-tR-lpnaGiJ3knLf0Dcg_5h9OPFBh";
-    const VAPID_PUBLIC_KEY = ""; // (선택) 백그라운드 서버 푸시 연결 시 입력
-    // =========================================================================
+    const VAPID_PUBLIC_KEY = "";
 
-    const db = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const db = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
 
     let profile = JSON.parse(localStorage.getItem('lovelog_profile') || '{"myNick":"","partnerNick":"","startDate":"2026-08-05"}');
     let currentYear = new Date().getFullYear();
     let currentMonth = new Date().getMonth();
     let schedulesData = [];
+    let lettersData = [];
     let swRegistration = null;
 
-    // 1. 서비스 워커(백그라운드 알림 수신기) 등록
     if ('serviceWorker' in navigator) {
       window.addEventListener('load', async () => {
         try {
           swRegistration = await navigator.serviceWorker.register('./service-worker.js');
           updatePushStatusUI();
         } catch (err) {
-          console.log('Service Worker 등록 안내:', err);
+          console.log('Service Worker:', err);
         }
       });
     }
 
-    // 2. 초기 화면 및 실시간 데이터 구독 시작
     window.addEventListener('DOMContentLoaded', () => {
       updateHeaderUI();
       renderCalendar();
@@ -353,11 +348,13 @@ const SUPABASE_URL = "https://ybgwmwrohjzwxinqvpfp.supabase.co";
       localStorage.setItem('lovelog_profile', JSON.stringify(profile));
       updateHeaderUI();
 
-      await db.from('profiles').upsert({
-        nickname: myNick,
-        name: myNick,
-        status_message: startDate
-      }, { onConflict: 'nickname' });
+      if (db) {
+        await db.from('profiles').upsert({
+          nickname: myNick,
+          name: myNick,
+          status_message: startDate
+        }, { onConflict: 'nickname' });
+      }
 
       closeModal('modal-settings');
       loadAllData();
@@ -380,7 +377,6 @@ const SUPABASE_URL = "https://ybgwmwrohjzwxinqvpfp.supabase.co";
       }
     }
 
-    // 3. 푸시 알림 권한 허용 및 토큰 저장
     function updatePushStatusUI() {
       const statusEl = document.getElementById('push-status-text');
       const dotEl = document.getElementById('push-dot');
@@ -400,4 +396,296 @@ const SUPABASE_URL = "https://ybgwmwrohjzwxinqvpfp.supabase.co";
 
     async function enablePushNotifications() {
       if (!('Notification' in window)) {
-        return
+        return alert('아이폰은 Safari에서 [공유 → 홈 화면에 추가]로 설치한 앱에서 알림을 켤 수 있습니다!');
+      }
+      const permission = await Notification.requestPermission();
+      updatePushStatusUI();
+
+      if (permission === 'granted') {
+        let subData = { enabled: true, updatedAt: new Date().toISOString() };
+        if (swRegistration && VAPID_PUBLIC_KEY) {
+          try {
+            const sub = await swRegistration.pushManager.subscribe({
+              userVisibleOnly: true,
+              applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+            });
+            subData = sub.toJSON();
+          } catch (e) { console.log(e); }
+        }
+        if (db && profile.myNick) {
+          await db.from('profiles').upsert({
+            nickname: profile.myNick,
+            name: profile.myNick,
+            status_message: profile.startDate,
+            push_subscription: subData
+          }, { onConflict: 'nickname' });
+        }
+        if (swRegistration) {
+          swRegistration.showNotification('우리 둘만의 공간 💕', {
+            body: '알림이 정상적으로 연결되었습니다!',
+            icon: './icon.png'
+          });
+        }
+      }
+    }
+
+    function urlBase64ToUint8Array(base64String) {
+      const padding = '='.repeat((4 - base64String.length % 4) % 4);
+      const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
+      const rawData = window.atob(base64);
+      return Uint8Array.from([...rawData].map(char => char.charCodeAt(0)));
+    }
+
+    function triggerLocalNotification(title, body) {
+      if ('Notification' in window && Notification.permission === 'granted' && swRegistration) {
+        swRegistration.showNotification(title, { body, icon: './icon.png' });
+      }
+    }
+
+    async function loadAllData() {
+      if (!db) return;
+      await Promise.all([loadSchedules(), loadAnniversaries(), loadAlbums(), loadLetters()]);
+    }
+
+    function subscribeRealtime() {
+      if (!db) return;
+      db.channel('couple-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'schedules' }, payload => {
+          loadSchedules();
+          if (payload.eventType === 'INSERT' && payload.new.owner_nickname !== profile.myNick) {
+            triggerLocalNotification('새 데이트 일정 📅', `${payload.new.title} (${payload.new.date})`);
+          }
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'anniversary_groups' }, () => loadAnniversaries())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'albums' }, payload => {
+          loadAlbums();
+          if (payload.eventType === 'INSERT') {
+            triggerLocalNotification('새 추억 사진 🖼️', `${payload.new.title} 사진이 올라왔어요!`);
+          }
+        })
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'letters' }, payload => {
+          loadLetters();
+          if (payload.eventType === 'INSERT' && payload.new.sender_nickname !== profile.myNick) {
+            triggerLocalNotification('새 편지가 도착했어요 💌', `${payload.new.sender_nickname}: ${payload.new.title}`);
+          }
+        })
+        .subscribe();
+    }
+
+    async function loadSchedules() {
+      const { data } = await db.from('schedules').select('*').order('date', { ascending: true });
+      schedulesData = (data || []).filter(item =>
+        item.owner_nickname === profile.myNick || item.owner_nickname === profile.partnerNick
+      );
+      renderCalendar();
+      const listEl = document.getElementById('schedule-list');
+      if (!schedulesData.length) {
+        listEl.innerHTML = '<p class="text-xs text-center text-[#A89898] py-4">등록된 일정이 없습니다. 첫 데이트를 등록해 보세요!</p>';
+        return;
+      }
+      listEl.innerHTML = schedulesData.map(s => `
+        <div class="bg-white p-3.5 rounded-2xl border border-[#F7E7EB] shadow-sm flex items-start gap-3">
+          <div class="w-12 h-11 rounded-xl bg-[#FFF0F3] text-[#EC4899] flex flex-col items-center justify-center font-bold text-xs shrink-0 border border-[#FCD5DE]">
+            <span>${s.date.slice(5).replace('-', '.')}</span>
+            <span class="text-[9px] font-normal">${s.start_time || '종일'}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="text-xs font-bold text-[#4A3E3D]">${s.title}</div>
+            <p class="text-[11px] text-[#8C7E7E] mt-0.5">${s.memo || ''}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function submitSchedule() {
+      const date = document.getElementById('sched-date').value;
+      const title = document.getElementById('sched-title').value.trim();
+      const start_time = document.getElementById('sched-time').value;
+      const memo = document.getElementById('sched-memo').value.trim();
+      if (!date || !title) return alert('날짜와 일정 제목을 입력해 주세요!');
+      await db.from('schedules').insert({
+        owner_nickname: profile.myNick,
+        date, title, start_time, memo,
+        shared_users: [profile.myNick, profile.partnerNick]
+      });
+      closeModal('modal-schedule');
+      loadSchedules();
+    }
+
+    function renderCalendar() {
+      document.getElementById('calendar-month-label').textContent = `${currentYear}년 ${currentMonth + 1}월`;
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const todayStr = new Date().toISOString().slice(0, 10);
+      let html = '';
+      for (let i = 0; i < firstDay; i++) html += '<span></span>';
+      for (let d = 1; d <= lastDate; d++) {
+        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const hasEvent = schedulesData.some(s => s.date === dateStr);
+        const isToday = dateStr === todayStr;
+        html += `<div class="p-2 relative rounded-xl ${isToday ? 'bg-[#FFE4E9] text-[#EC4899] font-bold' : ''}">
+          ${d}
+          ${hasEvent ? '<span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 text-[8px]">💖</span>' : ''}
+        </div>`;
+      }
+      document.getElementById('calendar-grid').innerHTML = html;
+    }
+
+    function changeMonth(diff) {
+      currentMonth += diff;
+      if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+      if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      renderCalendar();
+    }
+
+    function resetToToday() {
+      currentYear = new Date().getFullYear();
+      currentMonth = new Date().getMonth();
+      renderCalendar();
+    }
+
+    async function loadAnniversaries() {
+      const { data } = await db.from('anniversary_groups').select('*').order('created_at', { ascending: false });
+      const list = (data || []).filter(item =>
+        (item.shared_users || []).includes(profile.myNick) || (item.shared_users || []).includes(profile.partnerNick)
+      );
+      const listEl = document.getElementById('anniversary-list');
+      if (!list.length) {
+        listEl.innerHTML = '<p class="text-xs text-center text-[#A89898] py-4">추가된 기념일이 없습니다.</p>';
+        return;
+      }
+      listEl.innerHTML = list.map(a => {
+        const ev = (a.events && a.events[0]) || {};
+        const target = new Date(ev.date || new Date());
+        const diff = Math.ceil((target - new Date()) / (1000 * 60 * 60 * 24));
+        const badge = diff === 0 ? 'D-Day 🎉' : (diff > 0 ? `D-${diff}` : `D+${Math.abs(diff)}`);
+        return `
+          <div class="bg-white p-3.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-full bg-[#FFF0F3] text-lg flex items-center justify-center border border-[#FED7E2]">🎂</div>
+              <div>
+                <h4 class="text-xs font-bold text-[#4A3E3D]">${a.name}</h4>
+                <p class="text-[11px] text-[#8C7E7E]">${ev.date || ''}</p>
+              </div>
+            </div>
+            <span class="bg-[#FFE4E9] text-[#EC4899] text-xs font-bold px-2.5 py-1 rounded-full">${badge}</span>
+          </div>`;
+      }).join('');
+    }
+
+    async function submitAnniversary() {
+      const name = document.getElementById('anniv-title').value.trim();
+      const date = document.getElementById('anniv-date').value;
+      if (!name || !date) return alert('기념일 이름과 날짜를 입력해 주세요!');
+      await db.from('anniversary_groups').insert({
+        name,
+        shared_users: [profile.myNick, profile.partnerNick],
+        events: [{ date }]
+      });
+      closeModal('modal-anniversary');
+      loadAnniversaries();
+    }
+
+    async function loadAlbums() {
+      const { data } = await db.from('albums').select('*').order('created_at', { ascending: false });
+      const grid = document.getElementById('album-grid');
+      if (!data || !data.length) {
+        grid.innerHTML = '<p class="col-span-2 text-xs text-center text-[#A89898] py-8">아직 올린 사진이 없어요. 첫 추억을 올려보세요! 📸</p>';
+        return;
+      }
+      grid.innerHTML = data.map(item => `
+        <div class="bg-white p-2.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex flex-col">
+          <div class="h-36 rounded-xl bg-pink-50 overflow-hidden relative">
+            <img src="${item.media_url}" class="w-full h-full object-cover" alt="${item.title}">
+            ${item.location ? `<span class="absolute top-2 right-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded-md">${item.location}</span>` : ''}
+          </div>
+          <div class="pt-2 px-1">
+            <h4 class="text-xs font-bold text-[#4A3E3D] truncate">${item.title}</h4>
+            <p class="text-[10px] text-[#8C7E7E]">${item.date}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function submitAlbum() {
+      const file = document.getElementById('album-file').files[0];
+      const title = document.getElementById('album-title').value.trim() || '소중한 추억';
+      const location = document.getElementById('album-location').value.trim();
+      const date = document.getElementById('album-date').value || new Date().toISOString().slice(0, 10);
+      if (!file) return alert('사진 파일을 선택해 주세요!');
+
+      const btn = document.getElementById('btn-upload-album');
+      btn.textContent = '올리는 중...';
+      btn.disabled = true;
+
+      const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+      const { error: uploadErr } = await db.storage.from('lovelog-media').upload(fileName, file);
+      if (uploadErr) {
+        btn.textContent = '올리기';
+        btn.disabled = false;
+        return alert('사진 업로드 실패: Supabase Storage에 lovelog-media 버킷이 Public으로 만들어져 있는지 확인해 주세요!');
+      }
+
+      const { data: urlData } = db.storage.from('lovelog-media').getPublicUrl(fileName);
+      await db.from('albums').insert({
+        title, date, location,
+        media_type: 'image',
+        media_url: urlData.publicUrl
+      });
+
+      btn.textContent = '올리기';
+      btn.disabled = false;
+      closeModal('modal-album');
+      loadAlbums();
+    }
+
+    async function loadLetters() {
+      const { data } = await db.from('letters').select('*').order('created_at', { ascending: false });
+      lettersData = (data || []).filter(l =>
+        l.sender_nickname === profile.myNick || l.receiver_nickname === profile.myNick
+      );
+      const listEl = document.getElementById('letter-list');
+      if (!lettersData.length) {
+        listEl.innerHTML = '<p class="text-xs text-center text-[#A89898] py-8">주고받은 편지가 아직 없습니다 ✉️</p>';
+        return;
+      }
+      listEl.innerHTML = lettersData.map((l, idx) => `
+        <div onclick="readLetter(${idx})" class="bg-white p-3.5 rounded-2xl border border-[#F5EBE6] shadow-sm flex items-center justify-between cursor-pointer hover:border-[#FCD5DE] transition">
+          <div class="flex items-center gap-3">
+            <div class="text-xl">${idx === 0 ? '✉️' : '💌'}</div>
+            <div>
+              <h4 class="text-xs font-bold text-[#4A3E3D]">${l.title}</h4>
+              <p class="text-[10px] text-[#A89898]">보낸 사람: ${l.sender_nickname}</p>
+            </div>
+          </div>
+          <span class="text-xs text-[#EC4899] font-semibold">열어보기 ›</span>
+        </div>
+      `).join('');
+    }
+
+    async function submitLetter() {
+      const title = document.getElementById('letter-title').value.trim();
+      const content = document.getElementById('letter-content').value.trim();
+      if (!title || !content) return alert('편지 제목과 내용을 입력해 주세요!');
+      await db.from('letters').insert({
+        sender_nickname: profile.myNick,
+        receiver_nickname: profile.partnerNick,
+        title, content
+      });
+      document.getElementById('letter-title').value = '';
+      document.getElementById('letter-content').value = '';
+      closeModal('modal-letter');
+      loadLetters();
+    }
+
+    function readLetter(idx) {
+      const letter = lettersData[idx];
+      if (!letter) return;
+      document.getElementById('read-letter-title').textContent = letter.title;
+      document.getElementById('read-letter-sender').textContent = `From. ${letter.sender_nickname}`;
+      document.getElementById('read-letter-body').textContent = letter.content;
+      openModal('modal-read-letter');
+    }
+  </script>
+</body>
+</html>
