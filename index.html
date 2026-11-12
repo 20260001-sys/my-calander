@@ -3,20 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>우리 둘만의 공간 💕 - 커플 다이어리</title>
+  <title>우리 둘만의 공간 💕 - 커플 & 친구 공유 다이어리</title>
 
-  <!-- PWA 홈 화면 설치 및 아이콘 연결 -->
   <meta name="theme-color" content="#EC4899" id="meta-theme-color">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="우리 둘만의 공간">
 
-  <!-- 폰트 & Tailwind CSS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
-  <!-- Supabase 연결 라이브러리 -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
@@ -29,13 +26,14 @@
       --bg-badge: #FFE4E9;
       --bg-input: #FFFFFF;
       --border-main: #F2ECE4;
-      --border-soft: #FCD5DE;
+      --border-soft: #F9A8D4;
       --text-main: #4A3E3D;
       --text-sub: #8C7E7E;
       --text-muted: #A89898;
       --accent: #EC4899;
       --accent-hover: #DB2777;
       --accent-text: #FFFFFF;
+      --weekend-color: #0284C7;
     }
 
     body {
@@ -89,6 +87,19 @@
       color: var(--text-muted);
     }
 
+    .calendar-frame {
+      background-color: transparent;
+      border: 2px solid var(--accent);
+    }
+
+    .calendar-cell-transparent {
+      background-color: transparent;
+    }
+
+    .text-weekend {
+      color: var(--weekend-color) !important;
+    }
+
     .text-main { color: var(--text-main); }
     .text-sub { color: var(--text-sub); }
     .text-muted { color: var(--text-muted); }
@@ -102,131 +113,188 @@
 </head>
 <body class="flex justify-center items-center min-h-screen p-0 sm:p-4">
 
-  <div class="app-shell w-full max-w-md h-[100dvh] sm:h-[844px] sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col relative border-0 sm:border-[8px]">
+  <div class="app-shell w-full max-w-md h-[100dvh] sm:h-[852px] sm:rounded-[36px] shadow-2xl overflow-hidden flex flex-col relative border-0 sm:border-[8px]">
 
-    <!-- 상단 헤더 -->
-    <header class="app-header px-5 pt-4 pb-3 border-b shrink-0">
-      <div class="flex items-center justify-between">
-        <div class="flex items-center space-x-2">
-          <button type="button" onclick="openSettingsModal()" class="w-10 h-10 rounded-full app-badge flex items-center justify-center text-lg shadow-sm border overflow-hidden shrink-0">
+    <!-- 상단 개인 프로필 영역 -->
+    <header class="app-header px-4 pt-3.5 pb-3 border-b shrink-0">
+      <div class="flex items-center justify-between gap-2.5">
+        <!-- 프로필 사진 + D-day -->
+        <div class="flex items-center gap-2 shrink-0">
+          <button type="button" onclick="openProfileModal()" class="w-12 h-12 rounded-full app-badge flex items-center justify-center text-xl shadow-sm border-2 overflow-hidden shrink-0">
             <img id="header-avatar-img" src="" alt="프로필" class="w-full h-full object-cover hidden">
             <span id="header-avatar-emoji">🧸</span>
           </button>
-          <div id="header-dday" class="app-badge text-xs font-semibold px-2.5 py-0.5 rounded-full border">
-            D+1 💕
+        </div>
+
+        <!-- 사용자 이름 & 이름 아래 문구(한 줄 소개) -->
+        <div class="flex-1 min-w-0 cursor-pointer" onclick="openProfileModal()">
+          <div class="flex items-center gap-1.5">
+            <h1 id="header-user-name" class="text-[15px] font-bold text-main tracking-tight truncate">프로필을 설정해 주세요</h1>
+            <span id="header-dday" class="app-badge text-[10px] font-bold px-2 py-0.5 rounded-full border shrink-0">D+1 💕</span>
           </div>
+          <p id="header-user-bio" class="text-[11px] text-sub truncate mt-0.5">터치해서 이름, 한 줄 소개, 테마 색상을 편집하세요</p>
         </div>
-        <div class="text-center cursor-pointer flex-1 px-2 min-w-0" onclick="openSettingsModal()">
-          <h1 id="header-couple-names" class="text-base font-bold text-main tracking-tight truncate">커플 설정하기</h1>
-          <p id="header-subtitle" class="text-[11px] text-muted truncate">터치해서 프로필·테마·시작일 편집</p>
+
+        <!-- 우측 버튼 묶음: 프로필 편집 버튼 바로 위에 돋보기(친구검색) 버튼 배치 -->
+        <div class="flex flex-col items-center gap-1 shrink-0">
+          <button type="button" onclick="openFriendsModal()" title="친구검색" class="w-14 py-1 rounded-full app-card border text-main text-[11px] font-bold shadow-sm flex items-center justify-center gap-0.5 hover:opacity-85 transition">
+            <span>🔍</span><span>친구</span>
+          </button>
+          <button type="button" onclick="openProfileModal()" title="프로필 편집" class="w-14 py-1 rounded-full app-btn-primary text-[11px] font-bold shadow-sm flex items-center justify-center transition relative">
+            <span>프로필</span>
+            <span id="push-dot" class="hidden absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full bg-emerald-400 border border-white"></span>
+          </button>
         </div>
-        <button type="button" onclick="openSettingsModal()" title="프로필 및 앱 설정" class="w-9 h-9 rounded-full app-card flex items-center justify-center text-sm shadow-sm border text-sub transition relative shrink-0">
-          ⚙️
-          <span id="push-dot" class="hidden absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-emerald-400"></span>
-        </button>
       </div>
     </header>
 
     <!-- 메인 영역 -->
-    <main class="flex-1 overflow-y-auto no-scrollbar p-5 pb-24">
+    <main class="flex-1 overflow-y-auto no-scrollbar p-4 pb-24">
 
-      <!-- 1. 일정 탭 -->
-      <section id="tab-schedule" class="space-y-5">
-        <div class="flex items-center justify-between">
+      <!-- ==================== 1. 일정 탭 ==================== -->
+      <section id="tab-schedule" class="space-y-4">
+        <div class="flex items-center justify-between gap-2">
           <div>
             <h2 class="text-lg font-bold text-main">우리의 일정 📅</h2>
-            <p class="text-xs text-sub">함께할 소중한 약속들을 챙겨보세요</p>
+            <p class="text-[11px] text-sub">날짜를 눌러 세부 일정과 알림을 등록하세요</p>
           </div>
-          <button type="button" onclick="openScheduleModal()" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+          <button type="button" onclick="openDayDetailModal(selectedDateStr)" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition shrink-0">
             + 일정 등록
           </button>
         </div>
 
-        <!-- 달력 카드 -->
-        <div class="app-card rounded-2xl p-4 shadow-sm border">
-          <div class="flex justify-between items-center mb-3">
-            <span id="calendar-month-label" class="font-bold text-sm text-main">2026년 11월</span>
-            <div class="flex gap-2 text-xs text-sub">
-              <button type="button" onclick="changeMonth(-1)" class="px-1.5 py-0.5 rounded hover:opacity-70">◀</button>
-              <button type="button" onclick="resetToToday()" class="text-accent font-semibold">오늘</button>
-              <button type="button" onclick="changeMonth(1)" class="px-1.5 py-0.5 rounded hover:opacity-70">▶</button>
-            </div>
-          </div>
-          <div class="grid grid-cols-7 gap-1 text-center text-xs mb-2 font-medium text-muted">
-            <span class="text-rose-400">일</span><span>월</span><span>화</span><span>수</span><span>목</span><span>금</span><span class="text-blue-400">토</span>
-          </div>
-          <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-xs text-main"></div>
+        <!-- 일년 / 한 달 / 한 주 단위 전환 버튼 -->
+        <div class="grid grid-cols-3 gap-1.5 p-1 rounded-2xl app-soft-box border">
+          <button type="button" id="cal-mode-year" onclick="setCalendarViewMode('year')" class="py-1.5 rounded-xl text-xs font-bold transition text-sub">일년</button>
+          <button type="button" id="cal-mode-month" onclick="setCalendarViewMode('month')" class="py-1.5 rounded-xl text-xs font-bold transition app-btn-primary">한 달</button>
+          <button type="button" id="cal-mode-week" onclick="setCalendarViewMode('week')" class="py-1.5 rounded-xl text-xs font-bold transition text-sub">한 주</button>
         </div>
 
-        <!-- 일정 목록 -->
-        <div class="space-y-3">
-          <h3 class="text-xs font-bold text-sub uppercase tracking-wider">다가오는 데이트</h3>
+        <!-- 달력 프레임 (테마 색상 테두리 + 투명 내부 칸 + 토/일 하늘색 강조) -->
+        <div class="calendar-frame rounded-2xl p-3.5 shadow-sm">
+          <div class="flex justify-between items-center mb-3">
+            <span id="calendar-header-label" class="font-bold text-sm text-main">2026년 11월</span>
+            <div class="flex items-center gap-2 text-xs text-sub">
+              <button type="button" onclick="navigateCalendar(-1)" class="px-2 py-0.5 rounded hover:opacity-70 font-bold">◀</button>
+              <button type="button" onclick="resetToToday()" class="text-accent font-bold px-1.5">오늘</button>
+              <button type="button" onclick="navigateCalendar(1)" class="px-2 py-0.5 rounded hover:opacity-70 font-bold">▶</button>
+            </div>
+          </div>
+
+          <!-- 한 달 / 한 주 요일 헤더 -->
+          <div id="calendar-weekdays" class="grid grid-cols-7 gap-1 text-center text-xs mb-2 font-bold">
+            <span class="text-weekend">일</span>
+            <span class="text-main">월</span>
+            <span class="text-main">화</span>
+            <span class="text-main">수</span>
+            <span class="text-main">목</span>
+            <span class="text-main">금</span>
+            <span class="text-weekend">토</span>
+          </div>
+
+          <!-- 달력 그리드 (투명 칸) -->
+          <div id="calendar-grid" class="grid grid-cols-7 gap-1 text-center text-xs text-main bg-transparent"></div>
+        </div>
+
+        <!-- 선택 날짜 / 다가오는 일정 목록 -->
+        <div class="space-y-2.5">
+          <div class="flex items-center justify-between">
+            <h3 id="schedule-list-title" class="text-xs font-bold text-sub">다가오는 공유 일정</h3>
+            <button type="button" onclick="showAllUpcomingSchedules()" id="btn-show-all-sched" class="hidden text-[11px] text-accent font-semibold">전체 일정 보기</button>
+          </div>
           <div id="schedule-list" class="space-y-2.5">
-            <p class="text-xs text-center text-muted py-4">등록된 일정이 없습니다. 첫 데이트를 등록해 보세요!</p>
+            <p class="text-xs text-center text-muted py-4">등록된 일정이 없습니다. 달력 날짜를 눌러 첫 일정을 등록해 보세요!</p>
           </div>
         </div>
       </section>
 
-      <!-- 2. 기념일 탭 -->
-      <section id="tab-anniversary" class="space-y-5 hidden">
+      <!-- ==================== 2. 기념일 탭 ==================== -->
+      <section id="tab-anniversary" class="space-y-4 hidden">
         <div class="flex items-center justify-between">
           <div>
             <h2 class="text-lg font-bold text-main">우리의 기념일 💖</h2>
-            <p class="text-xs text-sub">지나온 날들과 앞으로 맞이할 설렘</p>
+            <p class="text-[11px] text-sub">소중한 사람들과 기념일 그룹을 만들어 공유하세요</p>
           </div>
-          <button type="button" onclick="openModal('modal-anniversary')" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
-            + 기념일 추가
+          <button type="button" onclick="openAnnivGroupCreateModal()" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+            + 그룹 만들기
           </button>
         </div>
 
-        <div class="app-soft-box rounded-3xl p-5 border shadow-sm text-center relative overflow-hidden">
-          <div class="absolute -right-4 -bottom-4 text-7xl opacity-20">💑</div>
-          <span class="inline-block app-card text-accent font-bold text-xs px-3 py-1 rounded-full mb-2 border">처음 손잡은 날로부터</span>
-          <div id="anniv-main-days" class="text-4xl font-extrabold text-accent tracking-tight my-1">1일 💕</div>
-          <p id="anniv-main-date" class="text-xs text-sub">상단 프로필에서 시작일을 입력해 주세요</p>
+        <!-- 메인 디데이 카드 -->
+        <div class="app-soft-box rounded-3xl p-4 border shadow-sm text-center relative overflow-hidden">
+          <div class="absolute -right-3 -bottom-3 text-6xl opacity-15">💑</div>
+          <span class="inline-block app-card text-accent font-bold text-[11px] px-3 py-0.5 rounded-full mb-1.5 border">함께한 날로부터</span>
+          <div id="anniv-main-days" class="text-3xl font-extrabold text-accent tracking-tight my-0.5">1일째 💕</div>
+          <p id="anniv-main-date" class="text-[11px] text-sub">프로필 편집에서 시작일을 설정할 수 있어요</p>
         </div>
 
-        <div class="space-y-3">
-          <h3 class="text-xs font-bold text-sub uppercase tracking-wider">기념일 캘린더</h3>
-          <div id="anniversary-list" class="space-y-2.5"></div>
+        <!-- 기념일 공유 그룹 목록 -->
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-bold text-sub">기념일 공유 그룹</h3>
+          <div id="anniv-group-list" class="space-y-2.5">
+            <p class="text-xs text-center text-muted py-6">아직 생성된 기념일 그룹이 없습니다.<br>상단의 [+ 그룹 만들기] 버튼을 눌러 시작해 보세요!</p>
+          </div>
         </div>
       </section>
 
-      <!-- 3. 앨범 탭 -->
-      <section id="tab-album" class="space-y-5 hidden">
+      <!-- ==================== 3. 앨범 탭 ==================== -->
+      <section id="tab-album" class="space-y-4 hidden">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-lg font-bold text-main">추억 앨범 🖼️</h2>
-            <p class="text-xs text-sub">함께 웃고 설렜던 순간들의 기록</p>
+            <h2 class="text-lg font-bold text-main">공유 갤러리 🖼️</h2>
+            <p class="text-[11px] text-sub">사진·동영상과 장소, 짧은 메모를 함께 남겨요</p>
           </div>
-          <button type="button" onclick="openModal('modal-album')" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
-            + 사진 올리기
+          <button type="button" onclick="openAlbumAddModal()" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+            + 앨범 추가
           </button>
         </div>
+
         <div id="album-grid" class="grid grid-cols-2 gap-3">
-          <p class="col-span-2 text-xs text-center text-muted py-8">아직 올린 사진이 없어요. 첫 추억을 올려보세요! 📸</p>
+          <p class="col-span-2 text-xs text-center text-muted py-8">아직 올린 추억이 없어요. [+ 앨범 추가]로 첫 사진을 올려보세요! 📸</p>
         </div>
       </section>
 
-      <!-- 4. 편지 탭 -->
-      <section id="tab-letter" class="space-y-5 hidden">
+      <!-- ==================== 4. 편지 탭 ==================== -->
+      <section id="tab-letter" class="space-y-4 hidden">
         <div class="flex items-center justify-between">
           <div>
-            <h2 class="text-lg font-bold text-main">둘만의 편지함 💌</h2>
-            <p class="text-xs text-sub">서로에게 전하는 진심 어린 마음</p>
+            <h2 class="text-lg font-bold text-main">비밀 우체통 💌</h2>
+            <p class="text-[11px] text-sub">친구별 편지함과 손그림 편지를 주고받아요</p>
           </div>
-          <button type="button" onclick="openModal('modal-letter')" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
+          <button type="button" onclick="openLetterWriteModal('')" class="app-btn-primary text-xs font-semibold px-3 py-1.5 rounded-full shadow-sm transition">
             + 편지 쓰기
           </button>
         </div>
-        <div id="letter-list" class="space-y-3">
-          <p class="text-xs text-center text-muted py-8">주고받은 편지가 아직 없습니다 ✉️</p>
+
+        <!-- 내장 수신 알림음 ON/OFF 스위치 및 테스트 -->
+        <div class="app-card p-3.5 rounded-2xl border shadow-sm flex items-center justify-between gap-2">
+          <div class="flex items-center gap-2.5">
+            <span class="text-lg">🔔</span>
+            <div>
+              <div class="text-xs font-bold text-main">새 편지 수신 멜로디 알림음</div>
+              <p class="text-[10px] text-sub">앱 내장 멜로디로 도착 알림을 알려줍니다</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button type="button" onclick="playBuiltInLetterMelody(true)" class="app-badge px-2 py-1 rounded-lg border text-[10px] font-bold">테스트</button>
+            <button type="button" id="btn-letter-sound-toggle" onclick="toggleLetterSound()" class="px-3 py-1 rounded-full text-[11px] font-bold transition app-btn-primary">
+              ON
+            </button>
+          </div>
+        </div>
+
+        <!-- 친구별 받은 편지함 -->
+        <div class="space-y-2.5">
+          <h3 class="text-xs font-bold text-sub">친구별 받은 편지함</h3>
+          <div id="friend-mailbox-list" class="space-y-2.5">
+            <p class="text-xs text-center text-muted py-8">받은 편지가 아직 없습니다 ✉️</p>
+          </div>
         </div>
       </section>
     </main>
 
-    <!-- 하단 탭 바 -->
-    <nav class="app-shell absolute bottom-0 left-0 right-0 backdrop-blur-md border-t px-4 py-2.5 z-20 shadow-lg">
+    <!-- 하단 고정 4개 탭 메뉴 -->
+    <nav class="app-shell absolute bottom-0 left-0 right-0 backdrop-blur-md border-t px-4 py-2 z-20 shadow-lg">
       <div class="flex justify-around items-center">
         <button type="button" id="nav-schedule" onclick="switchTab('schedule')" class="flex flex-col items-center py-1 px-3 tab-active">
           <span class="text-xl mb-0.5">📅</span><span class="text-[11px] font-bold">일정</span>
@@ -243,49 +311,72 @@
       </div>
     </nav>
 
-    <!-- [모달 1] 프로필 편집 & 테마·알림 설정 -->
-    <div id="modal-settings" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
-      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3 max-h-[90dvh] overflow-y-auto no-scrollbar">
-        <h3 class="text-base font-bold text-center text-main">프로필 편집 & 앱 설정 ⚙️</h3>
+    <!-- ==================== [모달 1] 친구검색 & 친구 관리 (돋보기 버튼) ==================== -->
+    <div id="modal-friends" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3.5 max-h-[88dvh] overflow-y-auto no-scrollbar">
+        <div class="flex items-center justify-between">
+          <h3 class="text-base font-bold text-main">🔍 #닉네임 친구검색</h3>
+          <button type="button" onclick="closeModal('modal-friends')" class="text-sm text-sub font-bold px-2">✕</button>
+        </div>
+        <p class="text-[11px] text-sub">상대방의 앱 내 <span class="font-bold text-accent">#닉네임</span>을 검색해 친구로 추가하면 일정·기념일·앨범·편지를 함께 공유할 수 있어요.</p>
 
-        <!-- 프로필 사진 & 닉네임 -->
+        <div class="flex gap-1.5">
+          <input id="friend-search-input" type="text" placeholder="예: #서연 또는 서연" class="app-input flex-1 px-3 py-2 rounded-xl border text-xs" onkeydown="if(event.key==='Enter') searchUsersByNickname()">
+          <button type="button" onclick="searchUsersByNickname()" class="app-btn-primary px-3.5 py-2 rounded-xl text-xs font-bold shrink-0">검색</button>
+        </div>
+
+        <!-- 검색 결과 -->
+        <div id="friend-search-results" class="space-y-2"></div>
+
+        <!-- 내 친구 목록 -->
+        <div class="pt-2 border-t space-y-2" style="border-color: var(--border-main);">
+          <h4 class="text-xs font-bold text-sub">내 친구 목록 (<span id="friends-count">0</span>명)</h4>
+          <div id="my-friends-list" class="space-y-2 max-h-44 overflow-y-auto no-scrollbar">
+            <p class="text-[11px] text-muted text-center py-3">아직 추가된 친구가 없습니다.</p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeModal('modal-friends')" class="w-full app-card border py-2.5 rounded-xl text-xs font-bold text-sub">닫기</button>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 2] 프로필 편집 & 테마·초기화 ==================== -->
+    <div id="modal-profile" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3 max-h-[90dvh] overflow-y-auto no-scrollbar">
+        <h3 class="text-base font-bold text-center text-main">프로필 편집 ⚙️</h3>
+
+        <!-- 프로필 사진 -->
         <div class="flex items-center gap-3 p-3 rounded-2xl app-soft-box border">
           <div class="w-14 h-14 rounded-full app-badge border flex items-center justify-center text-2xl overflow-hidden shrink-0">
             <img id="preview-avatar-img" src="" alt="미리보기" class="w-full h-full object-cover hidden">
             <span id="preview-avatar-emoji">🧸</span>
           </div>
-          <div class="flex-1 space-y-1.5">
+          <div class="flex-1 space-y-1">
             <label class="inline-block app-btn-primary text-[11px] font-bold px-3 py-1.5 rounded-xl cursor-pointer">
               📷 프로필 사진 변경
               <input id="input-avatar-file" type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
             </label>
-            <p class="text-[10px] text-sub">고화질 사진도 자동으로 가볍게 변환됩니다</p>
+            <p class="text-[10px] text-sub">고화질 사진도 자동으로 최적화됩니다</p>
           </div>
         </div>
 
         <div class="space-y-2.5 text-xs">
-          <div class="grid grid-cols-2 gap-2">
-            <div>
-              <label class="font-semibold text-sub">내 닉네임</label>
-              <input id="input-my-nick" type="text" placeholder="예: 지훈" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
-            </div>
-            <div>
-              <label class="font-semibold text-sub">상대방 닉네임</label>
-              <input id="input-partner-nick" type="text" placeholder="예: 서연" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
-            </div>
+          <div>
+            <label class="font-semibold text-sub">내 이름 / #닉네임 (친구 검색용 아이디)</label>
+            <input id="input-my-nick" type="text" placeholder="예: 지훈" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
           </div>
 
           <div>
             <label class="font-semibold text-sub">이름 아래 문구 (한 줄 소개)</label>
-            <input id="input-bio" type="text" placeholder="예: 오늘도 너와 함께해서 행복해 💕" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            <input id="input-bio" type="text" placeholder="예: 오늘도 소중한 하루 기록하기 💕" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
           </div>
 
           <div>
-            <label class="font-semibold text-sub">우리 처음 만난 날</label>
+            <label class="font-semibold text-sub">기념일 시작일 (D-day 기준일)</label>
             <input id="input-start-date" type="date" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
           </div>
 
-          <!-- 6가지 앱 테마 색상 변경 -->
+          <!-- 6가지 앱 테마 색상 변경 (연분홍 기본 + 연보라, 하늘색, 연두색, 흰색, 검정색) -->
           <div>
             <label class="font-semibold text-sub block mb-1.5">앱 테마 색상 변경 (기본: 연분홍)</label>
             <div class="grid grid-cols-3 gap-1.5" id="theme-selector">
@@ -309,33 +400,18 @@
               </button>
             </div>
           </div>
-
-          <!-- 알림음 / 벨소리 선택 -->
-          <div class="p-3 rounded-2xl app-card border space-y-2">
-            <div class="flex items-center justify-between">
-              <span class="font-semibold text-sub">🔔 알림음 / 벨소리 설정</span>
-              <button type="button" id="btn-preview-sound" onclick="togglePreviewSound()" class="app-badge px-2.5 py-1 rounded-lg border font-bold text-[11px]">
-                ▶ 미리듣기
-              </button>
-            </div>
-            <label class="block text-center py-1.5 px-2 rounded-xl border border-dashed text-sub cursor-pointer hover:opacity-80">
-              🎵 내 소리 파일(MP3/녹음) 선택하기
-              <input id="input-ringtone-file" type="file" accept="audio/*" class="hidden" onchange="handleRingtoneUpload(event)">
-            </label>
-            <p id="ringtone-name-text" class="text-[10px] text-muted text-center truncate">선택된 소리: 기본 알림음</p>
-          </div>
         </div>
 
         <button type="button" onclick="enablePushNotifications()" class="w-full app-soft-box text-accent border py-2.5 rounded-xl font-bold text-xs transition">
-          🔔 이 스마트폰 푸시 알림 허용하기
+          🔔 스마트폰 백그라운드 푸시 알림 허용하기
         </button>
         <p id="push-status-text" class="text-[11px] text-center text-sub">알림 상태: 확인 필요</p>
 
         <div class="flex gap-2 pt-1">
-          <button type="button" onclick="openModal('modal-reset-confirm')" class="px-3 py-2.5 rounded-xl text-xs font-bold border border-rose-300 text-rose-500 bg-rose-50/70">
+          <button type="button" onclick="openModal('modal-reset-confirm')" class="px-3 py-2.5 rounded-xl text-xs font-bold border border-rose-300 text-rose-500 bg-rose-50/80">
             초기화
           </button>
-          <button type="button" onclick="closeSettingsModal()" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">
+          <button type="button" onclick="closeProfileModal()" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">
             닫기
           </button>
           <button type="button" onclick="saveProfileSettings()" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">
@@ -345,13 +421,13 @@
       </div>
     </div>
 
-    <!-- [모달 1-1] 초기화 재확인 창 (예/아니오) -->
+    <!-- ==================== [모달 2-1] 초기화 재확인 창 (예/아니오) ==================== -->
     <div id="modal-reset-confirm" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] hidden">
       <div class="app-shell rounded-3xl max-w-xs w-full p-5 shadow-2xl border space-y-4 text-center">
         <div class="text-3xl">⚠️</div>
         <div class="space-y-1">
           <h4 class="text-sm font-bold text-main">초기화를 정말 하시겠습니까?</h4>
-          <p class="text-[11px] text-sub">프로필 정보와 테마 색상이 기본값(연분홍)으로 되돌아갑니다.</p>
+          <p class="text-[11px] text-sub">프로필 정보와 테마 색상이 기본 설정(연분홍)으로 초기화됩니다.</p>
         </div>
         <div class="flex gap-2">
           <button type="button" onclick="closeModal('modal-reset-confirm')" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">
@@ -364,27 +440,2008 @@
       </div>
     </div>
 
-    <!-- [모달 2] 일정 등록 -->
-    <div id="modal-schedule" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
-      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3">
-        <h3 class="text-base font-bold text-center text-main">새 데이트 일정 📅</h3>
-        <div class="space-y-2 text-xs">
-          <input id="sched-date" type="date" class="app-input w-full px-3 py-2 rounded-xl border">
-          <input id="sched-title" type="text" placeholder="일정 제목 (예: 성수동 카페 데이트 ☕)" class="app-input w-full px-3 py-2 rounded-xl border">
-          <input id="sched-time" type="time" class="app-input w-full px-3 py-2 rounded-xl border">
-          <input id="sched-memo" type="text" placeholder="메모 (예: 3번 출구에서 만나기)" class="app-input w-full px-3 py-2 rounded-xl border">
+    <!-- ==================== [모달 3] 날짜별 세부 일정 확인 및 등록 창 ==================== -->
+    <div id="modal-day-detail" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3 max-h-[90dvh] overflow-y-auto no-scrollbar">
+        <div class="flex items-center justify-between">
+          <h3 id="day-detail-title" class="text-base font-bold text-main">2026-11-13 세부 일정 📅</h3>
+          <button type="button" onclick="closeDayDetailModal()" class="text-sm text-sub font-bold px-2">✕</button>
         </div>
-        <div class="flex gap-2">
-          <button type="button" onclick="closeModal('modal-schedule')" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">취소</button>
-          <button type="button" onclick="submitSchedule()" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">등록</button>
+
+        <!-- 해당 날짜 기존 일정 목록 -->
+        <div id="day-existing-schedules" class="space-y-2"></div>
+
+        <!-- 새 세부 일정 등록 폼 -->
+        <div class="pt-2 border-t space-y-2.5 text-xs" style="border-color: var(--border-main);">
+          <h4 class="font-bold text-accent">+ 새 일정 등록하기</h4>
+          <input id="sched-date" type="hidden">
+
+          <div>
+            <label class="font-semibold text-sub">1. 일정 제목</label>
+            <input id="sched-title" type="text" placeholder="예: 성수동 카페 & 전시회 데이트 ☕" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+          </div>
+
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="font-semibold text-sub">2. 시작 시간</label>
+              <input id="sched-start-time" type="time" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            </div>
+            <div>
+              <label class="font-semibold text-sub">마감 시간</label>
+              <input id="sched-end-time" type="time" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            </div>
+          </div>
+
+          <div>
+            <label class="font-semibold text-sub">3. 알림 설정</label>
+            <select id="sched-reminder" onchange="toggleCustomReminderInput()" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+              <option value="없음">알림 없음</option>
+              <option value="30분전" selected>30분전</option>
+              <option value="1시간전">1시간전</option>
+              <option value="1일전">1일전</option>
+              <option value="1주일전">1주일전</option>
+              <option value="원하는 알림 날짜 설정">원하는 알림 날짜 설정</option>
+            </select>
+            <input id="sched-custom-reminder-date" type="datetime-local" class="app-input w-full mt-1.5 px-3 py-2 rounded-xl border hidden">
+          </div>
+
+          <!-- 4. 알림 벨소리 설정 -->
+          <div class="p-2.5 rounded-2xl app-soft-box border space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="font-semibold text-sub">4. 알림 벨소리 설정</label>
+              <button type="button" id="btn-sched-ringtone-preview" onclick="toggleScheduleRingtonePreview()" class="app-badge px-2.5 py-1 rounded-lg border text-[11px] font-bold">
+                ▶ 미리듣기
+              </button>
+            </div>
+            <select id="sched-ringtone-select" onchange="onScheduleRingtoneSelectChange()" class="app-input w-full px-2.5 py-1.5 rounded-xl border">
+              <option value="builtin:musicbox">내장 벨소리 1 - 맑은 오르골</option>
+              <option value="builtin:chime">내장 벨소리 2 - 로맨틱 차임</option>
+              <option value="builtin:piano">내장 벨소리 3 - 따뜻한 피아노</option>
+              <option value="custom">내 기기 오디오 파일(MP3/녹음) 직접 선택</option>
+            </select>
+            <div id="sched-custom-audio-box" class="hidden space-y-1">
+              <label class="block text-center py-1.5 px-2 rounded-xl border border-dashed app-card text-sub cursor-pointer">
+                🎵 오디오 파일(MP3/녹음) 선택하기
+                <input id="sched-ringtone-file" type="file" accept="audio/*" class="hidden" onchange="handleScheduleAudioUpload(event)">
+              </label>
+              <p id="sched-custom-audio-name" class="text-[10px] text-muted text-center truncate">선택된 파일 없음</p>
+            </div>
+          </div>
+
+          <!-- 5. 타사용자 공유 (#닉네임 태그 또는 친구 목록 선택) -->
+          <div>
+            <label class="font-semibold text-sub">5. 타사용자 공유 (#닉네임 입력 또는 친구 선택)</label>
+            <input id="sched-share-tags" type="text" placeholder="예: #서연 #민수 (쉼표나 띄어쓰기로 구분)" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            <div id="sched-friend-chips" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+          </div>
+
+          <!-- 6. 메모 및 링크 추가 -->
+          <div class="space-y-1.5">
+            <label class="font-semibold text-sub">6. 메모 및 링크 추가</label>
+            <textarea id="sched-memo" rows="2" placeholder="약속 장소, 준비물 등 메모를 입력하세요" class="app-input w-full px-3 py-2 rounded-xl border"></textarea>
+            <input id="sched-link" type="url" placeholder="관련 링크 추가 (예: https://map.naver.com/...)" class="app-input w-full px-3 py-2 rounded-xl border">
+          </div>
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="closeDayDetailModal()" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">닫기</button>
+          <button type="button" onclick="submitSchedule()" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">일정 저장</button>
         </div>
       </div>
     </div>
 
-    <!-- [모달 3] 기념일 추가 -->
-    <div id="modal-anniversary" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+    <!-- ==================== [모달 4] 기념일 그룹 만들기 ==================== -->
+    <div id="modal-anniv-group-create" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
       <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3">
-        <h3 class="text-base font-bold text-center text-main">기념일 추가 💖</h3>
+        <h3 class="text-base font-bold text-center text-main">새 기념일 공유 그룹 만들기 💖</h3>
+        <div class="space-y-2.5 text-xs">
+          <div>
+            <label class="font-semibold text-sub">그룹 이름</label>
+            <input id="group-create-name" type="text" placeholder="예: 우리 둘만의 기념일 💕 / 대학 동기 모임" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+          </div>
+          <div>
+            <label class="font-semibold text-sub">공유할 타사용자 (#닉네임)</label>
+            <input id="group-create-members" type="text" placeholder="예: #서연 #지민" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            <div id="group-create-friend-chips" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+          </div>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="closeModal('modal-anniv-group-create')" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">취소</button>
+          <button type="button" onclick="submitAnnivGroupCreate()" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">그룹 생성</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 5] 기념일 그룹 상세 창 (기념일 목록 + 추가 + 하단 편집) ==================== -->
+    <div id="modal-anniv-group-detail" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3.5 max-h-[90dvh] overflow-y-auto no-scrollbar">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 id="group-detail-name" class="text-base font-bold text-main">그룹 이름</h3>
+            <p id="group-detail-members" class="text-[11px] text-sub mt-0.5">공유 멤버: #나</p>
+          </div>
+          <button type="button" onclick="closeModal('modal-anniv-group-detail')" class="text-sm text-sub font-bold px-2">✕</button>
+        </div>
+
+        <!-- 그룹 내 기념일 목록 (목록 옆 부가 안내 문구 없이 깔끔하게 표시) -->
+        <div class="space-y-2">
+          <h4 class="text-xs font-bold text-sub">저장된 기념일 (항목을 누르면 초대장·선물·추억 열기)</h4>
+          <div id="group-anniv-items-list" class="space-y-2"></div>
+        </div>
+
+        <!-- 그룹 내 새 기념일 추가 -->
+        <div class="p-3 rounded-2xl app-soft-box border space-y-2 text-xs">
+          <h4 class="font-bold text-accent">+ 이 그룹에 기념일 추가하기</h4>
+          <input id="group-new-anniv-title" type="text" placeholder="기념일 제목 (예: 100일 기념일 / 서연 생일)" class="app-input w-full px-3 py-2 rounded-xl border">
+          <input id="group-new-anniv-date" type="date" class="app-input w-full px-3 py-2 rounded-xl border">
+          <input id="group-new-anniv-plan" type="text" placeholder="내가 준비한 일정 (예: 한강 야경 레스토랑 예약)" class="app-input w-full px-3 py-2 rounded-xl border">
+          <button type="button" onclick="submitGroupAnnivItem()" class="w-full app-btn-primary py-2 rounded-xl font-bold">기념일 등록</button>
+        </div>
+
+        <!-- 창 하단 편집 버튼 (그룹 이름 및 공유멤버 수정) -->
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="openAnnivGroupEditModal()" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-accent">
+            ✏️ 편집
+          </button>
+          <button type="button" onclick="closeModal('modal-anniv-group-detail')" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">
+            닫기
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 5-1] 기념일 그룹 편집 (그룹 이름 / 공유멤버 수정) ==================== -->
+    <div id="modal-anniv-group-edit" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3">
+        <h3 class="text-base font-bold text-center text-main">기념일 그룹 편집 ✏️</h3>
+        <div class="space-y-2.5 text-xs">
+          <div>
+            <label class="font-semibold text-sub">그룹 이름 수정</label>
+            <input id="group-edit-name" type="text" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+          </div>
+          <div>
+            <label class="font-semibold text-sub">공유멤버 수정 (#닉네임)</label>
+            <input id="group-edit-members" type="text" placeholder="예: #서연 #지민" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            <div id="group-edit-friend-chips" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+          </div>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="deleteCurrentAnnivGroup()" class="px-3 py-2.5 rounded-xl text-xs font-bold border border-rose-300 text-rose-500 bg-rose-50/80">삭제</button>
+          <button type="button" onclick="closeModal('modal-anniv-group-edit')" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">취소</button>
+          <button type="button" onclick="saveAnnivGroupEdit()" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">수정 완료</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 6] 기념일 항목 상세 창 (초대장 보내기 + 선물하기 연동 + 공유 갤러리 추억) ==================== -->
+    <div id="modal-anniv-item-detail" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-4 max-h-[90dvh] overflow-y-auto no-scrollbar">
+        <div class="flex items-center justify-between">
+          <div>
+            <span id="anniv-item-badge" class="app-badge text-[10px] font-bold px-2 py-0.5 rounded-full border">D-Day</span>
+            <h3 id="anniv-item-title" class="text-base font-bold text-main mt-1">기념일 제목</h3>
+            <p id="anniv-item-date" class="text-[11px] text-sub">2026-11-13</p>
+          </div>
+          <button type="button" onclick="closeModal('modal-anniv-item-detail')" class="text-sm text-sub font-bold px-2">✕</button>
+        </div>
+
+        <!-- 1. 초대장 보내기 & 2. 선물하기 연동 -->
+        <div class="p-3.5 rounded-2xl app-soft-box border space-y-2.5 text-xs">
+          <h4 class="font-bold text-accent">💌 1. 멤버들에게 초대장 보내기</h4>
+
+          <div>
+            <label class="font-semibold text-sub block mb-1">내가 준비한 일정 (달력 일정 불러오기 또는 직접 입력)</label>
+            <select id="invite-calendar-picker" onchange="applyCalendarScheduleToInvite()" class="app-input w-full px-2.5 py-1.5 rounded-xl border mb-1.5">
+              <option value="">📅 달력에서 등록된 일정 불러오기...</option>
+            </select>
+            <input id="invite-plan-input" type="text" placeholder="준비한 데이트/모임 일정을 입력하세요" class="app-input w-full px-3 py-2 rounded-xl border">
+          </div>
+
+          <div>
+            <label class="font-semibold text-sub block mb-1">초대 메시지</label>
+            <textarea id="invite-message-input" rows="2" placeholder="함께 특별한 날을 축하하자! 초대장을 보냅니다 💕" class="app-input w-full px-3 py-2 rounded-xl border"></textarea>
+          </div>
+
+          <!-- 선물하기 연동 버튼 (네이버 쇼핑 선물하기 & 카카오톡 선물하기) -->
+          <div class="pt-1 space-y-1.5">
+            <span class="font-semibold text-sub block">🎁 2. 초대장 선물하기 연동</span>
+            <div class="grid grid-cols-2 gap-2">
+              <a href="https://shopping.naver.com/gift" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1 py-2 px-2 rounded-xl bg-[#03C75A] text-white font-bold text-[11px] shadow-sm hover:opacity-90">
+                <span>N</span><span>네이버 선물하기</span>
+              </a>
+              <a href="https://gift.kakao.com" target="_blank" rel="noopener noreferrer" class="flex items-center justify-center gap-1 py-2 px-2 rounded-xl bg-[#FEE500] text-[#191919] font-bold text-[11px] shadow-sm hover:opacity-90">
+                <span>💬</span><span>카카오톡 선물하기</span>
+              </a>
+            </div>
+          </div>
+
+          <button type="button" onclick="sendAnnivInvitation()" class="w-full app-btn-primary py-2.5 rounded-xl font-bold shadow-sm">
+            📨 그룹 멤버에게 초대장 발송하기
+          </button>
+
+          <!-- 발송된 초대장 카드 미리보기 -->
+          <div id="sent-invitation-preview" class="hidden p-3 rounded-xl app-card border space-y-1.5">
+            <div class="text-[11px] font-bold text-accent">✨ 발송 완료된 초대장 카드</div>
+            <p id="sent-invitation-text" class="text-[11px] text-main whitespace-pre-line leading-relaxed"></p>
+            <div class="flex gap-2 pt-1">
+              <a href="https://shopping.naver.com/gift" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-[#03C75A] underline">네이버 선물하기 열기 ↗</a>
+              <a href="https://gift.kakao.com" target="_blank" rel="noopener noreferrer" class="text-[10px] font-bold text-amber-600 underline">카카오톡 선물하기 열기 ↗</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- 3. 공유 갤러리 추억 연동 (해당 기념일 날짜의 사진/동영상) -->
+        <div class="p-3.5 rounded-2xl app-card border space-y-2.5 text-xs">
+          <div class="flex items-center justify-between">
+            <h4 class="font-bold text-main">🖼️ 3. 이 날의 공유 갤러리 추억</h4>
+            <button type="button" onclick="openAlbumAddForAnnivDate()" class="app-badge px-2.5 py-1 rounded-lg border text-[10px] font-bold">+ 추억 올리기</button>
+          </div>
+          <div id="anniv-linked-memories" class="grid grid-cols-2 gap-2">
+            <p class="col-span-2 text-[11px] text-muted text-center py-3">이 기념일 날짜에 저장된 갤러리 사진이 없습니다.</p>
+          </div>
+        </div>
+
+        <button type="button" onclick="closeModal('modal-anniv-item-detail')" class="w-full app-card border py-2.5 rounded-xl text-xs font-bold text-sub">닫기</button>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 7] 앨범 추가 모달 ==================== -->
+    <div id="modal-album-add" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3">
+        <h3 class="text-base font-bold text-center text-main">공유 갤러리 앨범 추가 📸</h3>
         <div class="space-y-2 text-xs">
-          <input id="anniv-title" type="text" placeholder="기념일 이름 (예: 서연이 생일 🎂)" class="app-input w-full px-3 py-2 rounded-xl border">
-          <input id="anniv-date" type="date" class="app-input w-full px-3 py-2 rounded-xl border
+          <div>
+            <label class="font-semibold text-sub">사진 또는 동영상 선택</label>
+            <input id="album-file" type="file" accept="image/*,video/*" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+          </div>
+          <input id="album-title" type="text" placeholder="추억 제목 (예: 한강 피크닉 🌸)" class="app-input w-full px-3 py-2 rounded-xl border">
+          <input id="album-date" type="date" class="app-input w-full px-3 py-2 rounded-xl border">
+          <input id="album-location" type="text" placeholder="📍 장소 입력 (예: 여의도 한강공원)" class="app-input w-full px-3 py-2 rounded-xl border">
+          <div>
+            <input id="album-memo" type="text" placeholder="짧은 메모 입력 (예: 노을이 너무 예뻤던 날)" class="app-input w-full px-3 py-2 rounded-xl border">
+            <div class="flex flex-wrap gap-1 mt-1.5">
+              <button type="button" onclick="appendEmojiToInput('album-memo', '💕')" class="app-card border px-2 py-0.5 rounded-lg text-xs">💕</button>
+              <button type="button" onclick="appendEmojiToInput('album-memo', '🌸')" class="app-card border px-2 py-0.5 rounded-lg text-xs">🌸</button>
+              <button type="button" onclick="appendEmojiToInput('album-memo', '☕')" class="app-card border px-2 py-0.5 rounded-lg text-xs">☕</button>
+              <button type="button" onclick="appendEmojiToInput('album-memo', '🎂')" class="app-card border px-2 py-0.5 rounded-lg text-xs">🎂</button>
+              <button type="button" onclick="appendEmojiToInput('album-memo', '✨')" class="app-card border px-2 py-0.5 rounded-lg text-xs">✨</button>
+              <button type="button" onclick="appendEmojiToInput('album-memo', '🥰')" class="app-card border px-2 py-0.5 rounded-lg text-xs">🥰</button>
+              <button type="button" onclick="appendEmojiToInput('album-memo', '🌊')" class="app-card border px-2 py-0.5 rounded-lg text-xs">🌊</button>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('modal-album-add')" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">취소</button>
+          <button type="button" id="btn-upload-album" onclick="submitAlbum()" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">올리기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 7-1] 사진 하단 장소(📍) 및 짧은 메모 수정 창 ==================== -->
+    <div id="modal-album-meta-edit" class="fixed inset-0 bg-black/60 flex items-center justify-center p-4 z-[60] hidden">
+      <div class="app-shell rounded-3xl max-w-xs w-full p-5 shadow-2xl border space-y-3">
+        <h3 class="text-sm font-bold text-center text-main">📍 장소 & 짧은 메모 편집</h3>
+        <div class="space-y-2.5 text-xs">
+          <div>
+            <label class="font-semibold text-sub">📍 장소 추가/수정</label>
+            <input id="edit-album-location" type="text" placeholder="장소를 입력하세요" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+          </div>
+          <div>
+            <label class="font-semibold text-sub">짧은 메모 & 기본 이모티콘</label>
+            <input id="edit-album-memo" type="text" placeholder="짧은 메모를 입력하세요" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            <div class="flex flex-wrap gap-1 mt-1.5">
+              <button type="button" onclick="appendEmojiToInput('edit-album-memo', '💕')" class="app-card border px-2 py-0.5 rounded-lg">💕</button>
+              <button type="button" onclick="appendEmojiToInput('edit-album-memo', '🌸')" class="app-card border px-2 py-0.5 rounded-lg">🌸</button>
+              <button type="button" onclick="appendEmojiToInput('edit-album-memo', '☕')" class="app-card border px-2 py-0.5 rounded-lg">☕</button>
+              <button type="button" onclick="appendEmojiToInput('edit-album-memo', '🎂')" class="app-card border px-2 py-0.5 rounded-lg">🎂</button>
+              <button type="button" onclick="appendEmojiToInput('edit-album-memo', '✨')" class="app-card border px-2 py-0.5 rounded-lg">✨</button>
+              <button type="button" onclick="appendEmojiToInput('edit-album-memo', '🥰')" class="app-card border px-2 py-0.5 rounded-lg">🥰</button>
+            </div>
+          </div>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="button" onclick="closeModal('modal-album-meta-edit')" class="flex-1 app-card border py-2 rounded-xl text-xs font-bold text-sub">취소</button>
+          <button type="button" onclick="saveAlbumMetaEdit()" class="flex-1 app-btn-primary py-2 rounded-xl text-xs font-bold">저장</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 7-2] 앨범 상세 보기 & 다운로드 ==================== -->
+    <div id="modal-album-view" class="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-[60] hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-4 shadow-2xl border space-y-3">
+        <div class="flex items-center justify-between">
+          <h3 id="view-album-title" class="text-sm font-bold text-main truncate">추억 보기</h3>
+          <button type="button" onclick="closeModal('modal-album-view')" class="text-sm text-sub font-bold px-2">✕</button>
+        </div>
+        <div id="view-album-media-wrap" class="rounded-2xl overflow-hidden bg-black/5 max-h-72 flex items-center justify-center"></div>
+        <div class="text-xs space-y-1">
+          <p id="view-album-location" class="font-semibold text-accent">📍 장소 없음</p>
+          <p id="view-album-memo" class="text-main"></p>
+          <p id="view-album-date" class="text-[10px] text-muted"></p>
+        </div>
+        <div class="flex gap-2">
+          <button type="button" id="btn-view-album-download" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">⬇️ 다운로드</button>
+          <button type="button" onclick="closeModal('modal-album-view')" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">닫기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 8] 편지 쓰기 (손그림 캔버스 포함) ==================== -->
+    <div id="modal-letter-write" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3 max-h-[92dvh] overflow-y-auto no-scrollbar">
+        <h3 class="text-base font-bold text-center text-main">비밀 편지 쓰기 💌</h3>
+        <div class="space-y-2 text-xs">
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="font-semibold text-sub">보내는 사람</label>
+              <input id="letter-sender" type="text" placeholder="내 닉네임" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            </div>
+            <div>
+              <label class="font-semibold text-sub">받는 친구 (#닉네임)</label>
+              <input id="letter-receiver" type="text" placeholder="예: 서연" class="app-input w-full mt-1 px-3 py-2 rounded-xl border">
+            </div>
+          </div>
+          <div id="letter-friend-quick-select" class="flex flex-wrap gap-1"></div>
+
+          <input id="letter-title" type="text" placeholder="편지 제목을 입력하세요" class="app-input w-full px-3 py-2 rounded-xl border">
+          <textarea id="letter-content" rows="4" placeholder="마음을 담은 편지 내용을 적어보세요..." class="app-input w-full px-3 py-2 rounded-xl border"></textarea>
+
+          <!-- 손그림 그리기 캔버스 -->
+          <div class="p-2.5 rounded-2xl app-soft-box border space-y-2">
+            <div class="flex items-center justify-between">
+              <span class="font-bold text-sub">🎨 손그림 편지 그리기 (선택)</span>
+              <button type="button" onclick="clearDrawingCanvas()" class="text-[11px] text-rose-500 font-bold">지우기</button>
+            </div>
+            <!-- 펜 색상 & 굵기 선택 -->
+            <div class="flex items-center justify-between gap-1 flex-wrap">
+              <div class="flex items-center gap-1" id="canvas-colors">
+                <button type="button" onclick="setBrushColor('#1F2937')" class="w-5 h-5 rounded-full bg-[#1F2937] border border-white shadow-sm"></button>
+                <button type="button" onclick="setBrushColor('#EC4899')" class="w-5 h-5 rounded-full bg-[#EC4899] border border-white shadow-sm"></button>
+                <button type="button" onclick="setBrushColor('#EF4444')" class="w-5 h-5 rounded-full bg-[#EF4444] border border-white shadow-sm"></button>
+                <button type="button" onclick="setBrushColor('#3B82F6')" class="w-5 h-5 rounded-full bg-[#3B82F6] border border-white shadow-sm"></button>
+                <button type="button" onclick="setBrushColor('#10B981')" class="w-5 h-5 rounded-full bg-[#10B981] border border-white shadow-sm"></button>
+                <button type="button" onclick="setBrushColor('#8B5CF6')" class="w-5 h-5 rounded-full bg-[#8B5CF6] border border-white shadow-sm"></button>
+                <button type="button" onclick="setBrushColor('#F59E0B')" class="w-5 h-5 rounded-full bg-[#F59E0B] border border-white shadow-sm"></button>
+              </div>
+              <div class="flex items-center gap-1 text-[10px]">
+                <button type="button" onclick="setBrushSize(2)" class="app-card border px-1.5 py-0.5 rounded font-bold">얇게</button>
+                <button type="button" onclick="setBrushSize(5)" class="app-card border px-1.5 py-0.5 rounded font-bold">보통</button>
+                <button type="button" onclick="setBrushSize(10)" class="app-card border px-1.5 py-0.5 rounded font-bold">굵게</button>
+              </div>
+            </div>
+            <canvas id="letter-draw-canvas" width="300" height="150" class="w-full h-36 bg-white rounded-xl border border-dashed touch-none cursor-crosshair"></canvas>
+          </div>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="button" onclick="closeModal('modal-letter-write')" class="flex-1 app-card border py-2.5 rounded-xl text-xs font-bold text-sub">취소</button>
+          <button type="button" id="btn-submit-letter" onclick="submitLetter()" class="flex-1 app-btn-primary py-2.5 rounded-xl text-xs font-bold">편지 보내기</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== [모달 9] 친구별 받은 편지함 상세 & 답장하기 ==================== -->
+    <div id="modal-letter-friend" class="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50 hidden">
+      <div class="app-shell rounded-3xl max-w-sm w-full p-5 shadow-2xl border space-y-3.5 max-h-[90dvh] overflow-y-auto no-scrollbar">
+        <div class="flex items-center justify-between">
+          <h3 id="friend-letters-modal-title" class="text-base font-bold text-main">💌 #친구 님이 보낸 편지</h3>
+          <button type="button" onclick="closeModal('modal-letter-friend')" class="text-sm text-sub font-bold px-2">✕</button>
+        </div>
+
+        <div id="friend-letters-thread" class="space-y-3"></div>
+
+        <button type="button" onclick="closeModal('modal-letter-friend')" class="w-full app-card border py-2.5 rounded-xl text-xs font-bold text-sub">닫기</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const SUPABASE_URL = "https://ybgwmwrohjzwxinqvpfp.supabase.co";
+    const SUPABASE_ANON_KEY = "sb_publishable_0v-tR-lpnaGiJ3knLf0Dcg_5h9OPFBh";
+    const db = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+    // 6가지 테마 색상 정의 (기본: 연분홍)
+    const THEMES = {
+      pink: {
+        '--bg-outer': '#F8F5F0', '--bg-app': '#FFFDF9', '--bg-header-top': '#FFF0F3',
+        '--bg-card': '#FFFFFF', '--bg-soft': '#FFF0F3', '--bg-badge': '#FFE4E9', '--bg-input': '#FFFFFF',
+        '--border-main': '#F2ECE4', '--border-soft': '#F9A8D4',
+        '--text-main': '#4A3E3D', '--text-sub': '#8C7E7E', '--text-muted': '#A89898',
+        '--accent': '#EC4899', '--accent-hover': '#DB2777', '--accent-text': '#FFFFFF',
+        '--weekend-color': '#0284C7'
+      },
+      purple: {
+        '--bg-outer': '#F4F1FA', '--bg-app': '#FCFAFF', '--bg-header-top': '#F3E8FF',
+        '--bg-card': '#FFFFFF', '--bg-soft': '#F3E8FF', '--bg-badge': '#E9D5FF', '--bg-input': '#FFFFFF',
+        '--border-main': '#EAE2F8', '--border-soft': '#C084FC',
+        '--text-main': '#3B2F4A', '--text-sub': '#7C6D8F', '--text-muted': '#9F91B2',
+        '--accent': '#9333EA', '--accent-hover': '#7E22CE', '--accent-text': '#FFFFFF',
+        '--weekend-color': '#0284C7'
+      },
+      sky: {
+        '--bg-outer': '#EFF6FF', '--bg-app': '#F8FBFF', '--bg-header-top': '#E0F2FE',
+        '--bg-card': '#FFFFFF', '--bg-soft': '#E0F2FE', '--bg-badge': '#BAE6FD', '--bg-input': '#FFFFFF',
+        '--border-main': '#DCEBF7', '--border-soft': '#38BDF8',
+        '--text-main': '#2C3E50', '--text-sub': '#647B8C', '--text-muted': '#8DA3B5',
+        '--accent': '#0284C7', '--accent-hover': '#0369A1', '--accent-text': '#FFFFFF',
+        '--weekend-color': '#0284C7'
+      },
+      green: {
+        '--bg-outer': '#F0F7F2', '--bg-app': '#F9FCF9', '--bg-header-top': '#DCFCE7',
+        '--bg-card': '#FFFFFF', '--bg-soft': '#DCFCE7', '--bg-badge': '#BBF7D0', '--bg-input': '#FFFFFF',
+        '--border-main': '#DCECE1', '--border-soft': '#4ADE80',
+        '--text-main': '#2D4235', '--text-sub': '#637D6D', '--text-muted': '#8AA394',
+        '--accent': '#16A34A', '--accent-hover': '#15803D', '--accent-text': '#FFFFFF',
+        '--weekend-color': '#0284C7'
+      },
+      white: {
+        '--bg-outer': '#F3F4F6', '--bg-app': '#FFFFFF', '--bg-header-top': '#F9FAFB',
+        '--bg-card': '#FFFFFF', '--bg-soft': '#F3F4F6', '--bg-badge': '#E5E7EB', '--bg-input': '#FFFFFF',
+        '--border-main': '#E5E7EB', '--border-soft': '#9CA3AF',
+        '--text-main': '#1F2937', '--text-sub': '#6B7280', '--text-muted': '#9CA3AF',
+        '--accent': '#374151', '--accent-hover': '#111827', '--accent-text': '#FFFFFF',
+        '--weekend-color': '#0284C7'
+      },
+      black: {
+        '--bg-outer': '#09090B', '--bg-app': '#121215', '--bg-header-top': '#1E1E24',
+        '--bg-card': '#1C1C21', '--bg-soft': '#24242B', '--bg-badge': '#2E2E38', '--bg-input': '#24242B',
+        '--border-main': '#2E2E36', '--border-soft': '#52525B',
+        '--text-main': '#F4F4F5', '--text-sub': '#A1A1AA', '--text-muted': '#71717A',
+        '--accent': '#F472B6', '--accent-hover': '#EC4899', '--accent-text': '#121215',
+        '--weekend-color': '#38BDF8'
+      }
+    };
+
+    const DEFAULT_PROFILE = {
+      myNick: '',
+      bio: '',
+      startDate: '2026-08-05',
+      theme: 'pink',
+      avatarDataUrl: '',
+      letterSoundOn: true
+    };
+
+    let profile = Object.assign({}, DEFAULT_PROFILE, JSON.parse(localStorage.getItem('lovelog_profile_v2') || '{}'));
+    let friendsList = JSON.parse(localStorage.getItem('lovelog_friends_v2') || '[]');
+    let tempAvatarDataUrl = profile.avatarDataUrl || '';
+    let selectedThemeKey = profile.theme || 'pink';
+
+    // 캘린더 상태
+    let calendarViewMode = 'month'; // 'year' | 'month' | 'week'
+    let currentYear = new Date().getFullYear();
+    let currentMonth = new Date().getMonth();
+    let selectedDateStr = getLocalTodayStr();
+    let filterBySelectedDate = false;
+
+    // 데이터 캐시
+    let schedulesData = [];
+    let annivGroupsData = [];
+    let albumsData = [];
+    let lettersData = [];
+
+    // 활성 모달 타겟
+    let activeAnnivGroupId = null;
+    let activeAnnivEventIdx = null;
+    let activeEditAlbumId = null;
+
+    // 오디오 & 캔버스 상태
+    let activeAudioPlayer = null;
+    let tempCustomScheduleAudioUrl = '';
+    let tempCustomScheduleAudioName = '';
+    let canvasHasDrawing = false;
+    let brushColor = '#1F2937';
+    let brushSize = 4;
+    let triggeredReminders = new Set();
+
+    function cleanNick(str) {
+      return (str || '').trim().replace(/^#+/, '');
+    }
+
+    function parseNickTags(str) {
+      if (!str) return [];
+      return [...new Set(
+        str.split(/[\s,]+/)
+          .map(s => cleanNick(s))
+          .filter(Boolean)
+      )];
+    }
+
+    function getLocalTodayStr() {
+      const now = new Date();
+      return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+    }
+
+    function parseLocalDate(dateStr) {
+      const [y, m, d] = (dateStr || getLocalTodayStr()).split('-').map(Number);
+      return new Date(y, (m || 1) - 1, d || 1);
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text || '';
+      return div.innerHTML;
+    }
+
+    // ==================== 테마 적용 ====================
+    function applyTheme(themeKey) {
+      const palette = THEMES[themeKey] || THEMES.pink;
+      const root = document.documentElement;
+      Object.entries(palette).forEach(([k, v]) => root.style.setProperty(k, v));
+      const meta = document.getElementById('meta-theme-color');
+      if (meta) meta.setAttribute('content', palette['--accent']);
+
+      document.querySelectorAll('.theme-btn').forEach(btn => {
+        const isSel = btn.dataset.theme === themeKey;
+        btn.style.borderColor = isSel ? palette['--accent'] : '';
+        btn.style.boxShadow = isSel ? `0 0 0 2px ${palette['--accent']}40` : '';
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      applyTheme(profile.theme || 'pink');
+      updateHeaderUI();
+      updateLetterSoundToggleUI();
+      renderCalendar();
+      initDrawingCanvas();
+      startReminderWatcher();
+
+      if (!profile.myNick) {
+        openProfileModal();
+      } else {
+        loadAllData();
+        subscribeRealtime();
+      }
+    });
+
+    function stopAllSounds() {
+      if (activeAudioPlayer) {
+        activeAudioPlayer.pause();
+        activeAudioPlayer.currentTime = 0;
+        activeAudioPlayer = null;
+      }
+      const btn = document.getElementById('btn-sched-ringtone-preview');
+      if (btn) btn.textContent = '▶ 미리듣기';
+    }
+
+    function switchTab(tabId) {
+      stopAllSounds();
+      ['schedule', 'anniversary', 'album', 'letter'].forEach(tab => {
+        document.getElementById(`tab-${tab}`).classList.toggle('hidden', tab !== tabId);
+        const btn = document.getElementById(`nav-${tab}`);
+        btn.classList.toggle('tab-active', tab === tabId);
+        btn.classList.toggle('tab-inactive', tab !== tabId);
+      });
+      if (tabId === 'letter') renderFriendMailboxes();
+    }
+
+    function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+    function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+    // ==================== 상단 프로필 및 친구검색 ====================
+    function updateHeaderUI() {
+      const hImg = document.getElementById('header-avatar-img');
+      const hEmoji = document.getElementById('header-avatar-emoji');
+      if (profile.avatarDataUrl) {
+        hImg.src = profile.avatarDataUrl;
+        hImg.classList.remove('hidden');
+        hEmoji.classList.add('hidden');
+      } else {
+        hImg.classList.add('hidden');
+        hEmoji.classList.remove('hidden');
+      }
+
+      document.getElementById('header-user-name').textContent = profile.myNick
+        ? `#${profile.myNick}`
+        : '프로필을 설정해 주세요';
+
+      document.getElementById('header-user-bio').textContent = profile.bio
+        ? profile.bio
+        : '터치해서 이름 아래 문구와 테마를 편집하세요';
+
+      if (profile.startDate) {
+        const start = parseLocalDate(profile.startDate);
+        const today = parseLocalDate(getLocalTodayStr());
+        const diffDays = Math.floor((today - start) / (1000 * 60 * 60 * 24)) + 1;
+        const dText = diffDays > 0 ? `D+${diffDays}` : `D${diffDays}`;
+        document.getElementById('header-dday').textContent = `${dText} 💕`;
+        document.getElementById('anniv-main-days').textContent = `${diffDays}일째 💕`;
+        document.getElementById('anniv-main-date').textContent = `${profile.startDate} 시작`;
+      }
+    }
+
+    function openProfileModal() {
+      selectedThemeKey = profile.theme || 'pink';
+      tempAvatarDataUrl = profile.avatarDataUrl || '';
+      document.getElementById('input-my-nick').value = profile.myNick || '';
+      document.getElementById('input-bio').value = profile.bio || '';
+      document.getElementById('input-start-date').value = profile.startDate || '2026-08-05';
+      updateAvatarPreview(tempAvatarDataUrl);
+      applyTheme(selectedThemeKey);
+      updatePushStatusUI();
+      openModal('modal-profile');
+    }
+
+    function closeProfileModal() {
+      applyTheme(profile.theme || 'pink');
+      closeModal('modal-profile');
+    }
+
+    function selectTheme(themeKey) {
+      selectedThemeKey = themeKey;
+      applyTheme(themeKey);
+    }
+
+    function updateAvatarPreview(dataUrl) {
+      const img = document.getElementById('preview-avatar-img');
+      const emoji = document.getElementById('preview-avatar-emoji');
+      if (dataUrl) {
+        img.src = dataUrl;
+        img.classList.remove('hidden');
+        emoji.classList.add('hidden');
+      } else {
+        img.classList.add('hidden');
+        emoji.classList.remove('hidden');
+      }
+    }
+
+    function handleAvatarUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const img = new Image();
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          const maxSize = 240;
+          let w = img.width, h = img.height;
+          if (w > h && w > maxSize) { h = Math.round(h * maxSize / w); w = maxSize; }
+          else if (h > maxSize) { w = Math.round(w * maxSize / h); h = maxSize; }
+          canvas.width = w;
+          canvas.height = h;
+          canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+          tempAvatarDataUrl = canvas.toDataURL('image/jpeg', 0.82);
+          updateAvatarPreview(tempAvatarDataUrl);
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    async function saveProfileSettings() {
+      const myNick = cleanNick(document.getElementById('input-my-nick').value);
+      const bio = document.getElementById('input-bio').value.trim();
+      const startDate = document.getElementById('input-start-date').value || '2026-08-05';
+      if (!myNick) return alert('내 이름(#닉네임)을 입력해 주세요!');
+
+      profile = {
+        ...profile,
+        myNick,
+        bio,
+        startDate,
+        theme: selectedThemeKey,
+        avatarDataUrl: tempAvatarDataUrl
+      };
+      localStorage.setItem('lovelog_profile_v2', JSON.stringify(profile));
+      applyTheme(profile.theme);
+      updateHeaderUI();
+
+      if (db) {
+        await db.from('profiles').upsert({
+          nickname: myNick,
+          name: myNick,
+          status_message: bio || startDate
+        }, { onConflict: 'nickname' });
+      }
+
+      closeModal('modal-profile');
+      loadAllData();
+      subscribeRealtime();
+    }
+
+    function confirmResetProfile() {
+      profile = Object.assign({}, DEFAULT_PROFILE);
+      tempAvatarDataUrl = '';
+      selectedThemeKey = 'pink';
+      localStorage.removeItem('lovelog_profile_v2');
+
+      document.getElementById('input-my-nick').value = '';
+      document.getElementById('input-bio').value = '';
+      document.getElementById('input-start-date').value = '2026-08-05';
+      updateAvatarPreview('');
+      applyTheme('pink');
+      updateHeaderUI();
+      closeModal('modal-reset-confirm');
+    }
+
+    // ==================== 친구검색 & 친구 관리 ====================
+    function openFriendsModal() {
+      document.getElementById('friend-search-input').value = '';
+      document.getElementById('friend-search-results').innerHTML = '';
+      renderMyFriendsList();
+      openModal('modal-friends');
+    }
+
+    async function searchUsersByNickname() {
+      const raw = document.getElementById('friend-search-input').value;
+      const queryNick = cleanNick(raw);
+      const resBox = document.getElementById('friend-search-results');
+      if (!queryNick) return alert('검색할 #닉네임을 입력해 주세요!');
+
+      resBox.innerHTML = '<p class="text-[11px] text-sub text-center py-2">검색 중...</p>';
+      let foundUsers = [];
+
+      if (db) {
+        const { data } = await db.from('profiles').select('*').ilike('nickname', `%${queryNick}%`).limit(10);
+        foundUsers = (data || []).filter(u => u.nickname && u.nickname !== profile.myNick);
+      }
+
+      let html = foundUsers.map(u => {
+        const already = friendsList.includes(u.nickname);
+        return `
+          <div class="app-soft-box p-2.5 rounded-xl border flex items-center justify-between text-xs">
+            <div>
+              <div class="font-bold text-main">#${escapeHtml(u.nickname)}</div>
+              <div class="text-[10px] text-sub">${escapeHtml(u.status_message || '가입된 사용자')}</div>
+            </div>
+            <button type="button" onclick="addFriendByNick('${escapeHtml(u.nickname)}')" class="${already ? 'app-card border text-sub' : 'app-btn-primary'} px-3 py-1 rounded-lg font-bold text-[11px]">
+              ${already ? '추가됨 ✓' : '+ 친구 추가'}
+            </button>
+          </div>`;
+      }).join('');
+
+      if (!foundUsers.some(u => u.nickname === queryNick) && queryNick !== profile.myNick) {
+        const alreadyDirect = friendsList.includes(queryNick);
+        html += `
+          <div class="app-card p-2.5 rounded-xl border flex items-center justify-between text-xs">
+            <div>
+              <div class="font-bold text-main">#${escapeHtml(queryNick)}</div>
+              <div class="text-[10px] text-muted">닉네임으로 바로 친구 목록에 추가</div>
+            </div>
+            <button type="button" onclick="addFriendByNick('${escapeHtml(queryNick)}')" class="${alreadyDirect ? 'app-card border text-sub' : 'app-btn-primary'} px-3 py-1 rounded-lg font-bold text-[11px]">
+              ${alreadyDirect ? '추가됨 ✓' : '+ 바로 추가'}
+            </button>
+          </div>`;
+      }
+
+      resBox.innerHTML = html || '<p class="text-[11px] text-muted text-center py-2">검색 결과가 없습니다.</p>';
+    }
+
+    async function addFriendByNick(nick) {
+      const clean = cleanNick(nick);
+      if (!clean || clean === profile.myNick) return;
+      if (!friendsList.includes(clean)) {
+        friendsList.push(clean);
+        localStorage.setItem('lovelog_friends_v2', JSON.stringify(friendsList));
+        if (db && profile.myNick) {
+          try {
+            await db.from('friends').insert({ user_nickname: profile.myNick, friend_nickname: clean });
+          } catch (e) {}
+        }
+      }
+      renderMyFriendsList();
+      renderFriendMailboxes();
+      searchUsersByNickname();
+    }
+
+    function removeFriendByNick(nick) {
+      friendsList = friendsList.filter(f => f !== nick);
+      localStorage.setItem('lovelog_friends_v2', JSON.stringify(friendsList));
+      renderMyFriendsList();
+      renderFriendMailboxes();
+    }
+
+    function renderMyFriendsList() {
+      document.getElementById('friends-count').textContent = friendsList.length;
+      const box = document.getElementById('my-friends-list');
+      if (!friendsList.length) {
+        box.innerHTML = '<p class="text-[11px] text-muted text-center py-3">아직 추가된 친구가 없습니다.</p>';
+        return;
+      }
+      box.innerHTML = friendsList.map(f => `
+        <div class="app-card p-2.5 rounded-xl border flex items-center justify-between text-xs">
+          <span class="font-bold text-main">#${escapeHtml(f)}</span>
+          <div class="flex items-center gap-1.5">
+            <button type="button" onclick="closeModal('modal-friends'); openLetterWriteModal('${escapeHtml(f)}')" class="app-badge px-2 py-1 rounded-lg border text-[10px] font-bold">💌 편지</button>
+            <button type="button" onclick="removeFriendByNick('${escapeHtml(f)}')" class="text-[11px] text-rose-500 px-1.5">삭제</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // ==================== 푸시 알림 ====================
+    function updatePushStatusUI() {
+      const statusEl = document.getElementById('push-status-text');
+      const dotEl = document.getElementById('push-dot');
+      if (!('Notification' in window)) {
+        statusEl.textContent = '이 브라우저는 알림을 지원하지 않습니다 (홈 화면에 추가 후 사용)';
+        return;
+      }
+      if (Notification.permission === 'granted') {
+        statusEl.textContent = '알림 상태: 허용됨 ✅';
+        dotEl.classList.remove('hidden');
+      } else if (Notification.permission === 'denied') {
+        statusEl.textContent = '알림 상태: 차단됨 ❌ (브라우저 설정에서 허용 필요)';
+      } else {
+        statusEl.textContent = '알림 상태: 대기 중 (위 버튼을 눌러 허용해 주세요)';
+      }
+    }
+
+    async function enablePushNotifications() {
+      if (!('Notification' in window)) {
+        return alert('아이폰은 Safari에서 [공유 → 홈 화면에 추가]로 설치한 앱에서 알림을 허용할 수 있습니다!');
+      }
+      const perm = await Notification.requestPermission();
+      updatePushStatusUI();
+      if (perm === 'granted') {
+        playBuiltInBell('musicbox');
+        try { new Notification('우리 둘만의 공간 💕', { body: '알림이 정상적으로 연결되었습니다!' }); } catch (e) {}
+      }
+    }
+
+    // ==================== 1. 일정 (일년/한 달/한 주 + 투명 달력 + 주말 하늘색 + 세부 일정) ====================
+    function setCalendarViewMode(mode) {
+      calendarViewMode = mode;
+      ['year', 'month', 'week'].forEach(m => {
+        const btn = document.getElementById(`cal-mode-${m}`);
+        if (m === mode) {
+          btn.className = 'py-1.5 rounded-xl text-xs font-bold transition app-btn-primary';
+        } else {
+          btn.className = 'py-1.5 rounded-xl text-xs font-bold transition text-sub';
+        }
+      });
+      renderCalendar();
+    }
+
+    function navigateCalendar(diff) {
+      if (calendarViewMode === 'year') {
+        currentYear += diff;
+      } else if (calendarViewMode === 'month') {
+        currentMonth += diff;
+        if (currentMonth < 0) { currentMonth = 11; currentYear--; }
+        if (currentMonth > 11) { currentMonth = 0; currentYear++; }
+      } else if (calendarViewMode === 'week') {
+        const d = parseLocalDate(selectedDateStr);
+        d.setDate(d.getDate() + diff * 7);
+        selectedDateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+        currentYear = d.getFullYear();
+        currentMonth = d.getMonth();
+      }
+      renderCalendar();
+    }
+
+    function resetToToday() {
+      const now = new Date();
+      currentYear = now.getFullYear();
+      currentMonth = now.getMonth();
+      selectedDateStr = getLocalTodayStr();
+      filterBySelectedDate = false;
+      renderCalendar();
+      renderSchedulesList();
+    }
+
+    function renderCalendar() {
+      const label = document.getElementById('calendar-header-label');
+      const weekdaysEl = document.getElementById('calendar-weekdays');
+      const grid = document.getElementById('calendar-grid');
+      const todayStr = getLocalTodayStr();
+
+      if (calendarViewMode === 'year') {
+        label.textContent = `${currentYear}년 전체 일정`;
+        weekdaysEl.classList.add('hidden');
+        grid.className = 'grid grid-cols-3 gap-2 text-center text-[10px] bg-transparent';
+
+        let html = '';
+        for (let m = 0; m < 12; m++) {
+          const monthPrefix = `${currentYear}-${String(m + 1).padStart(2, '0')}`;
+          const monthCount = schedulesData.filter(s => (s.date || '').startsWith(monthPrefix)).length;
+          const isCurMonth = (m === currentMonth);
+          html += `
+            <button type="button" onclick="jumpToMonth(${m})" class="calendar-cell-transparent p-2.5 rounded-xl border transition flex flex-col items-center justify-center ${isCurMonth ? 'app-badge font-bold' : ''}" style="border-color: var(--border-main);">
+              <span class="text-xs font-bold text-main">${m + 1}월</span>
+              <span class="text-[10px] mt-1 ${monthCount > 0 ? 'text-accent font-bold' : 'text-muted'}">${monthCount > 0 ? `💖 ${monthCount}건` : '일정 없음'}</span>
+            </button>`;
+        }
+        grid.innerHTML = html;
+        return;
+      }
+
+      weekdaysEl.classList.remove('hidden');
+      grid.className = 'grid grid-cols-7 gap-1 text-center text-xs bg-transparent';
+
+      if (calendarViewMode === 'week') {
+        const base = parseLocalDate(selectedDateStr);
+        const startOfWeek = new Date(base);
+        startOfWeek.setDate(base.getDate() - base.getDay());
+        const endOfWeek = new Date(startOfWeek);
+        endOfWeek.setDate(startOfWeek.getDate() + 6);
+
+        label.textContent = `${startOfWeek.getMonth() + 1}.${startOfWeek.getDate()} ~ ${endOfWeek.getMonth() + 1}.${endOfWeek.getDate()} (주간)`;
+        let html = '';
+        for (let i = 0; i < 7; i++) {
+          const d = new Date(startOfWeek);
+          d.setDate(startOfWeek.getDate() + i);
+          const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+          const daySchedules = schedulesData.filter(s => s.date === dateStr);
+          const isWeekend = (i === 0 || i === 6);
+          const isSelected = (dateStr === selectedDateStr);
+          const isToday = (dateStr === todayStr);
+
+          html += `
+            <button type="button" onclick="onCalendarDateClick('${dateStr}')" class="calendar-cell-transparent py-3 px-1 rounded-xl flex flex-col items-center justify-between min-h-[68px] transition ${isSelected ? 'ring-2' : ''} ${isToday ? 'app-badge font-bold' : ''}" style="${isSelected ? 'ring-color: var(--accent);' : ''}">
+              <span class="${isWeekend ? 'text-weekend font-bold' : 'text-main font-semibold'}">${d.getDate()}</span>
+              <span class="text-[9px] mt-1 ${daySchedules.length ? 'text-accent font-bold' : 'text-transparent'}">${daySchedules.length ? `💖${daySchedules.length}` : '•'}</span>
+            </button>`;
+        }
+        grid.innerHTML = html;
+        return;
+      }
+
+      // 'month' 한 달 보기
+      label.textContent = `${currentYear}년 ${currentMonth + 1}월`;
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
+      let html = '';
+      for (let i = 0; i < firstDay; i++) html += '<span class="calendar-cell-transparent"></span>';
+      for (let d = 1; d <= lastDate; d++) {
+        const dateObj = new Date(currentYear, currentMonth, d);
+        const dow = dateObj.getDay();
+        const isWeekend = (dow === 0 || dow === 6);
+        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+        const hasEvent = schedulesData.some(s => s.date === dateStr);
+        const isToday = dateStr === todayStr;
+        const isSelected = dateStr === selectedDateStr && filterBySelectedDate;
+
+        html += `
+          <button type="button" onclick="onCalendarDateClick('${dateStr}')" class="calendar-cell-transparent p-2 relative rounded-xl transition ${isToday ? 'app-badge font-bold border' : ''} ${isSelected ? 'underline font-extrabold' : ''} ${isWeekend ? 'text-weekend font-bold' : 'text-main'}">
+            ${d}
+            ${hasEvent ? '<span class="absolute bottom-0.5 left-1/2 -translate-x-1/2 text-[8px]">💖</span>' : ''}
+          </button>`;
+      }
+      grid.innerHTML = html;
+    }
+
+    function jumpToMonth(monthIdx) {
+      currentMonth = monthIdx;
+      setCalendarViewMode('month');
+    }
+
+    function onCalendarDateClick(dateStr) {
+      selectedDateStr = dateStr;
+      filterBySelectedDate = true;
+      renderCalendar();
+      renderSchedulesList();
+      openDayDetailModal(dateStr);
+    }
+
+    function showAllUpcomingSchedules() {
+      filterBySelectedDate = false;
+      renderCalendar();
+      renderSchedulesList();
+    }
+
+    // 일정 메타데이터 패킹/언패킹 (기존 Supabase schedules 테이블 컬럼 100% 호환)
+    function packScheduleMemo(userMemo, meta) {
+      const cleanMemo = (userMemo || '').trim();
+      return `${cleanMemo}\n__META__:${JSON.stringify(meta)}`;
+    }
+
+    function unpackScheduleMemo(rawMemo) {
+      if (!rawMemo) return { memo: '', meta: {} };
+      const idx = rawMemo.indexOf('\n__META__:');
+      if (idx === -1) return { memo: rawMemo, meta: {} };
+      const memo = rawMemo.slice(0, idx);
+      try {
+        const meta = JSON.parse(rawMemo.slice(idx + 10));
+        return { memo, meta };
+      } catch (e) {
+        return { memo, meta: {} };
+      }
+    }
+
+    function openDayDetailModal(dateStr) {
+      const targetDate = dateStr || getLocalTodayStr();
+      selectedDateStr = targetDate;
+      document.getElementById('day-detail-title').textContent = `${targetDate} 세부 일정 📅`;
+      document.getElementById('sched-date').value = targetDate;
+      document.getElementById('sched-title').value = '';
+      document.getElementById('sched-start-time').value = '';
+      document.getElementById('sched-end-time').value = '';
+      document.getElementById('sched-reminder').value = '30분전';
+      document.getElementById('sched-custom-reminder-date').value = '';
+      document.getElementById('sched-custom-reminder-date').classList.add('hidden');
+      document.getElementById('sched-ringtone-select').value = 'builtin:musicbox';
+      document.getElementById('sched-custom-audio-box').classList.add('hidden');
+      document.getElementById('sched-share-tags').value = '';
+      document.getElementById('sched-memo').value = '';
+      document.getElementById('sched-link').value = '';
+      tempCustomScheduleAudioUrl = '';
+      tempCustomScheduleAudioName = '';
+
+      // 친구 칩 렌더링
+      const chipsBox = document.getElementById('sched-friend-chips');
+      chipsBox.innerHTML = friendsList.map(f => `
+        <button type="button" onclick="appendTagToInput('sched-share-tags', '${escapeHtml(f)}')" class="app-card border px-2 py-0.5 rounded-full text-[10px] font-bold text-accent">+#${escapeHtml(f)}</button>
+      `).join('');
+
+      // 해당 날짜 기존 일정 표시
+      const dayItems = schedulesData.filter(s => s.date === targetDate);
+      const listBox = document.getElementById('day-existing-schedules');
+      if (!dayItems.length) {
+        listBox.innerHTML = '<p class="text-[11px] text-muted text-center py-2">이 날짜에 등록된 일정이 아직 없습니다.</p>';
+      } else {
+        listBox.innerHTML = dayItems.map(s => {
+          const { memo, meta } = unpackScheduleMemo(s.memo);
+          const timeRange = s.start_time ? (meta.endTime ? `${s.start_time} ~ ${meta.endTime}` : s.start_time) : '종일';
+          const sharedStr = (s.shared_users || []).filter(u => u && u !== profile.myNick).map(u => `#${u}`).join(' ');
+          return `
+            <div class="app-card p-3 rounded-2xl border space-y-1 text-xs">
+              <div class="flex items-center justify-between gap-2">
+                <span class="font-bold text-main">${escapeHtml(s.title)}</span>
+                <button type="button" onclick="deleteItem('schedules', '${s.id}')" class="text-[10px] text-rose-500 font-bold">삭제</button>
+              </div>
+              <div class="text-[10px] text-sub flex flex-wrap gap-2">
+                <span>⏰ ${timeRange}</span>
+                ${meta.reminder && meta.reminder !== '없음' ? `<span>🔔 ${escapeHtml(meta.reminder)}${meta.customReminderDate ? ` (${meta.customReminderDate.replace('T', ' ')})` : ''}</span>` : ''}
+                ${sharedStr ? `<span class="text-accent font-semibold">👥 ${escapeHtml(sharedStr)}</span>` : ''}
+              </div>
+              ${memo ? `<p class="text-[11px] text-main pt-0.5">${escapeHtml(memo)}</p>` : ''}
+              ${meta.link ? `<a href="${escapeHtml(meta.link)}" target="_blank" rel="noopener noreferrer" class="inline-block text-[10px] text-accent underline font-semibold">🔗 첨부 링크 열기 ↗</a>` : ''}
+            </div>`;
+        }).join('');
+      }
+
+      openModal('modal-day-detail');
+    }
+
+    function closeDayDetailModal() {
+      stopAllSounds();
+      closeModal('modal-day-detail');
+    }
+
+    function toggleCustomReminderInput() {
+      const val = document.getElementById('sched-reminder').value;
+      const customInput = document.getElementById('sched-custom-reminder-date');
+      customInput.classList.toggle('hidden', val !== '원하는 알림 날짜 설정');
+    }
+
+    function onScheduleRingtoneSelectChange() {
+      const val = document.getElementById('sched-ringtone-select').value;
+      document.getElementById('sched-custom-audio-box').classList.toggle('hidden', val !== 'custom');
+      stopAllSounds();
+    }
+
+    function handleScheduleAudioUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      if (file.size > 3 * 1024 * 1024) {
+        return alert('용량이 큰 파일입니다. 3MB 이하의 오디오 파일(MP3/녹음)을 선택해 주세요!');
+      }
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        tempCustomScheduleAudioUrl = e.target.result;
+        tempCustomScheduleAudioName = file.name;
+        document.getElementById('sched-custom-audio-name').textContent = `선택됨: ${file.name}`;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function playBuiltInBell(type) {
+      stopAllSounds();
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+        const now = ctx.currentTime;
+        const notes = type === 'chime'
+          ? [659.25, 830.61, 987.77, 1318.51]
+          : type === 'piano'
+          ? [523.25, 659.25, 783.99, 1046.50]
+          : [587.33, 739.99, 880.00, 1174.66];
+
+        notes.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type === 'piano' ? 'triangle' : 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.14);
+          gain.gain.setValueAtTime(0.14, now + i * 0.14);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.14 + 0.45);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.14);
+          osc.stop(now + i * 0.14 + 0.45);
+        });
+      } catch (e) {}
+    }
+
+    function toggleScheduleRingtonePreview() {
+      const btn = document.getElementById('btn-sched-ringtone-preview');
+      if (activeAudioPlayer && !activeAudioPlayer.paused) {
+        stopAllSounds();
+        return;
+      }
+      const sel = document.getElementById('sched-ringtone-select').value;
+      if (sel === 'custom') {
+        if (!tempCustomScheduleAudioUrl) return alert('먼저 오디오 파일을 선택해 주세요!');
+        activeAudioPlayer = new Audio(tempCustomScheduleAudioUrl);
+        activeAudioPlayer.onended = stopAllSounds;
+        activeAudioPlayer.play().catch(() => {});
+        btn.textContent = '⏹ 정지';
+      } else {
+        const type = sel.split(':')[1] || 'musicbox';
+        playBuiltInBell(type);
+      }
+    }
+
+    function appendTagToInput(inputId, nick) {
+      const input = document.getElementById(inputId);
+      const existing = parseNickTags(input.value);
+      if (!existing.includes(nick)) {
+        existing.push(nick);
+      }
+      input.value = existing.map(n => `#${n}`).join(' ');
+    }
+
+    async function submitSchedule() {
+      const date = document.getElementById('sched-date').value || selectedDateStr;
+      const title = document.getElementById('sched-title').value.trim();
+      const start_time = document.getElementById('sched-start-time').value;
+      const endTime = document.getElementById('sched-end-time').value;
+      const reminder = document.getElementById('sched-reminder').value;
+      const customReminderDate = document.getElementById('sched-custom-reminder-date').value;
+      const ringtone = document.getElementById('sched-ringtone-select').value;
+      const rawTags = document.getElementById('sched-share-tags').value;
+      const userMemo = document.getElementById('sched-memo').value.trim();
+      const link = document.getElementById('sched-link').value.trim();
+
+      if (!title) return alert('일정 제목을 입력해 주세요!');
+
+      const sharedTags = parseNickTags(rawTags);
+      const shared_users = [...new Set([profile.myNick, ...sharedTags].filter(Boolean))];
+      const packedMemo = packScheduleMemo(userMemo, {
+        endTime,
+        reminder,
+        customReminderDate,
+        ringtone,
+        ringtoneName: tempCustomScheduleAudioName,
+        link
+      });
+
+      stopAllSounds();
+      if (db) {
+        await db.from('schedules').insert({
+          owner_nickname: profile.myNick || '나',
+          date,
+          title,
+          start_time,
+          memo: packedMemo,
+          shared_users
+        });
+      }
+
+      closeModal('modal-day-detail');
+      await loadSchedules();
+    }
+
+    async function loadSchedules() {
+      if (!db) return;
+      const { data } = await db.from('schedules').select('*').order('date', { ascending: true });
+      const my = profile.myNick;
+      schedulesData = (data || []).filter(item => {
+        if (!my) return true;
+        return item.owner_nickname === my || (item.shared_users || []).includes(my);
+      });
+      renderCalendar();
+      renderSchedulesList();
+    }
+
+    function renderSchedulesList() {
+      const listEl = document.getElementById('schedule-list');
+      const titleEl = document.getElementById('schedule-list-title');
+      const showAllBtn = document.getElementById('btn-show-all-sched');
+
+      const items = filterBySelectedDate
+        ? schedulesData.filter(s => s.date === selectedDateStr)
+        : schedulesData;
+
+      titleEl.textContent = filterBySelectedDate ? `${selectedDateStr} 등록 일정` : '전체 공유 일정';
+      showAllBtn.classList.toggle('hidden', !filterBySelectedDate);
+
+      if (!items.length) {
+        listEl.innerHTML = `<p class="text-xs text-center text-muted py-4">${filterBySelectedDate ? '선택한 날짜에 일정이 없습니다. 날짜를 다시 눌러 등록해 보세요!' : '등록된 일정이 없습니다. 달력 날짜를 눌러 첫 일정을 등록해 보세요!'}</p>`;
+        return;
+      }
+
+      listEl.innerHTML = items.map(s => {
+        const { memo, meta } = unpackScheduleMemo(s.memo);
+        const timeText = s.start_time ? (meta.endTime ? `${s.start_time}~${meta.endTime}` : s.start_time) : '종일';
+        const sharedBadges = (s.shared_users || []).filter(u => u && u !== profile.myNick).map(u => `#${u}`).join(' ');
+        return `
+          <div class="app-card p-3.5 rounded-2xl border shadow-sm flex items-start justify-between gap-2.5">
+            <div onclick="openDayDetailModal('${s.date}')" class="flex items-start gap-3 min-w-0 flex-1 cursor-pointer">
+              <div class="w-13 px-1.5 h-11 rounded-xl app-badge flex flex-col items-center justify-center font-bold text-[11px] shrink-0 border">
+                <span>${s.date.slice(5).replace('-', '.')}</span>
+                <span class="text-[9px] font-normal truncate max-w-full">${timeText}</span>
+              </div>
+              <div class="min-w-0 flex-1">
+                <div class="text-xs font-bold text-main truncate">${escapeHtml(s.title)}</div>
+                <div class="flex flex-wrap gap-1.5 text-[10px] text-sub mt-0.5">
+                  ${meta.reminder && meta.reminder !== '없음' ? `<span>🔔 ${escapeHtml(meta.reminder)}</span>` : ''}
+                  ${sharedBadges ? `<span class="text-accent font-semibold">👥 ${escapeHtml(sharedBadges)}</span>` : ''}
+                </div>
+                ${memo ? `<p class="text-[11px] text-sub mt-0.5 truncate">${escapeHtml(memo)}</p>` : ''}
+                ${meta.link ? `<a href="${escapeHtml(meta.link)}" target="_blank" rel="noopener noreferrer" onclick="event.stopPropagation()" class="inline-block text-[10px] text-accent underline mt-0.5">🔗 링크 열기</a>` : ''}
+              </div>
+            </div>
+            <button type="button" onclick="deleteItem('schedules', '${s.id}')" class="text-[11px] text-muted hover:text-rose-500 px-1 py-1 shrink-0">삭제</button>
+          </div>`;
+      }).join('');
+    }
+
+    // 일정 알림 시간 체커 (앱 실행 중 실시간 알림음)
+    function startReminderWatcher() {
+      setInterval(() => {
+        const now = new Date();
+        schedulesData.forEach(s => {
+          if (triggeredReminders.has(s.id)) return;
+          const { meta } = unpackScheduleMemo(s.memo);
+          if (!meta.reminder || meta.reminder === '없음') return;
+
+          let triggerTime = null;
+          if (meta.reminder === '원하는 알림 날짜 설정' && meta.customReminderDate) {
+            triggerTime = new Date(meta.customReminderDate);
+          } else {
+            const [y, m, d] = s.date.split('-').map(Number);
+            const [hh, mm] = (s.start_time || '09:00').split(':').map(Number);
+            const eventTime = new Date(y, m - 1, d, hh, mm);
+            const offsetMap = {
+              '30분전': 30 * 60 * 1000,
+              '1시간전': 60 * 60 * 1000,
+              '1일전': 24 * 60 * 60 * 1000,
+              '1주일전': 7 * 24 * 60 * 60 * 1000
+            };
+            if (offsetMap[meta.reminder]) {
+              triggerTime = new Date(eventTime.getTime() - offsetMap[meta.reminder]);
+            }
+          }
+
+          if (triggerTime && Math.abs(now.getTime() - triggerTime.getTime()) < 30000) {
+            triggeredReminders.add(s.id);
+            const bellType = (meta.ringtone || 'builtin:musicbox').split(':')[1] || 'musicbox';
+            playBuiltInBell(bellType);
+            if ('Notification' in window && Notification.permission === 'granted') {
+              try { new Notification(`일정 알림 📅 (${meta.reminder})`, { body: `${s.title} - ${s.date}` }); } catch (e) {}
+            }
+          }
+        });
+      }, 15000);
+    }
+
+    // ==================== 2. 기념일 (공유 그룹, 편집, 초대장, 선물하기 연동, 추억 연동) ====================
+    function openAnnivGroupCreateModal() {
+      document.getElementById('group-create-name').value = '';
+      document.getElementById('group-create-members').value = '';
+      document.getElementById('group-create-friend-chips').innerHTML = friendsList.map(f => `
+        <button type="button" onclick="appendTagToInput('group-create-members', '${escapeHtml(f)}')" class="app-card border px-2 py-0.5 rounded-full text-[10px] font-bold text-accent">+#${escapeHtml(f)}</button>
+      `).join('');
+      openModal('modal-anniv-group-create');
+    }
+
+    async function submitAnnivGroupCreate() {
+      const name = document.getElementById('group-create-name').value.trim();
+      const rawMembers = document.getElementById('group-create-members').value;
+      if (!name) return alert('그룹 이름을 입력해 주세요!');
+
+      const members = [...new Set([profile.myNick, ...parseNickTags(rawMembers)].filter(Boolean))];
+      if (db) {
+        await db.from('anniversary_groups').insert({
+          name,
+          shared_users: members,
+          events: []
+        });
+      }
+      closeModal('modal-anniv-group-create');
+      await loadAnnivGroups();
+    }
+
+    async function loadAnnivGroups() {
+      if (!db) return;
+      const { data } = await db.from('anniversary_groups').select('*').order('created_at', { ascending: false });
+      const my = profile.myNick;
+      annivGroupsData = (data || []).filter(g => {
+        if (!my) return true;
+        return (g.shared_users || []).includes(my);
+      });
+      renderAnnivGroups();
+    }
+
+    function renderAnnivGroups() {
+      const box = document.getElementById('anniv-group-list');
+      if (!annivGroupsData.length) {
+        box.innerHTML = '<p class="text-xs text-center text-muted py-6">아직 생성된 기념일 그룹이 없습니다.<br>상단의 [+ 그룹 만들기] 버튼을 눌러 시작해 보세요!</p>';
+        return;
+      }
+      box.innerHTML = annivGroupsData.map(g => {
+        const membersText = (g.shared_users || []).map(m => `#${m}`).join(' ');
+        const eventCount = (g.events || []).length;
+        return `
+          <button type="button" onclick="openAnnivGroupDetailModal('${g.id}')" class="w-full text-left app-card p-4 rounded-2xl border shadow-sm flex items-center justify-between gap-2 hover:opacity-90 transition">
+            <div class="min-w-0">
+              <div class="text-sm font-bold text-main truncate">💝 ${escapeHtml(g.name)}</div>
+              <p class="text-[11px] text-sub truncate mt-0.5">${escapeHtml(membersText)}</p>
+            </div>
+            <span class="app-badge text-xs font-bold px-2.5 py-1 rounded-full border shrink-0">${eventCount}개 ›</span>
+          </button>`;
+      }).join('');
+    }
+
+    function openAnnivGroupDetailModal(groupId) {
+      activeAnnivGroupId = groupId;
+      const group = annivGroupsData.find(g => String(g.id) === String(groupId));
+      if (!group) return;
+
+      document.getElementById('group-detail-name').textContent = `💝 ${group.name}`;
+      document.getElementById('group-detail-members').textContent = `공유 멤버: ${(group.shared_users || []).map(m => `#${m}`).join(' ')}`;
+      document.getElementById('group-new-anniv-title').value = '';
+      document.getElementById('group-new-anniv-date').value = '';
+      document.getElementById('group-new-anniv-plan').value = '';
+
+      // 그룹 내 기념일 목록 (목록 옆 부가 안내 문구 없이 제목과 날짜만 깔끔하게 표시)
+      const events = group.events || [];
+      const listEl = document.getElementById('group-anniv-items-list');
+      if (!events.length) {
+        listEl.innerHTML = '<p class="text-[11px] text-muted text-center py-3">등록된 기념일이 없습니다.</p>';
+      } else {
+        listEl.innerHTML = events.map((ev, idx) => `
+          <button type="button" onclick="openAnnivItemDetailModal(${idx})" class="w-full text-left app-card p-3 rounded-xl border flex items-center justify-between hover:opacity-85 transition">
+            <span class="text-xs font-bold text-main truncate">${escapeHtml(ev.title || '기념일')}</span>
+            <span class="text-xs font-semibold text-accent shrink-0">${escapeHtml(ev.date || '')}</span>
+          </button>
+        `).join('');
+      }
+
+      openModal('modal-anniv-group-detail');
+    }
+
+    async function submitGroupAnnivItem() {
+      const group = annivGroupsData.find(g => String(g.id) === String(activeAnnivGroupId));
+      if (!group) return;
+      const title = document.getElementById('group-new-anniv-title').value.trim();
+      const date = document.getElementById('group-new-anniv-date').value;
+      const plan = document.getElementById('group-new-anniv-plan').value.trim();
+      if (!title || !date) return alert('기념일 제목과 날짜를 입력해 주세요!');
+
+      const updatedEvents = [...(group.events || []), { title, date, plan }];
+      if (db) {
+        await db.from('anniversary_groups').update({ events: updatedEvents }).eq('id', group.id);
+      }
+      await loadAnnivGroups();
+      openAnnivGroupDetailModal(group.id);
+    }
+
+    function openAnnivGroupEditModal() {
+      const group = annivGroupsData.find(g => String(g.id) === String(activeAnnivGroupId));
+      if (!group) return;
+      document.getElementById('group-edit-name').value = group.name || '';
+      document.getElementById('group-edit-members').value = (group.shared_users || [])
+        .filter(m => m !== profile.myNick)
+        .map(m => `#${m}`).join(' ');
+      document.getElementById('group-edit-friend-chips').innerHTML = friendsList.map(f => `
+        <button type="button" onclick="appendTagToInput('group-edit-members', '${escapeHtml(f)}')" class="app-card border px-2 py-0.5 rounded-full text-[10px] font-bold text-accent">+#${escapeHtml(f)}</button>
+      `).join('');
+      openModal('modal-anniv-group-edit');
+    }
+
+    async function saveAnnivGroupEdit() {
+      const group = annivGroupsData.find(g => String(g.id) === String(activeAnnivGroupId));
+      if (!group) return;
+      const newName = document.getElementById('group-edit-name').value.trim();
+      if (!newName) return alert('그룹 이름을 입력해 주세요!');
+      const editedTags = parseNickTags(document.getElementById('group-edit-members').value);
+      const newMembers = [...new Set([profile.myNick, ...editedTags].filter(Boolean))];
+
+      if (db) {
+        await db.from('anniversary_groups').update({
+          name: newName,
+          shared_users: newMembers
+        }).eq('id', group.id);
+      }
+      closeModal('modal-anniv-group-edit');
+      await loadAnnivGroups();
+      openAnnivGroupDetailModal(group.id);
+    }
+
+    async function deleteCurrentAnnivGroup() {
+      if (!activeAnnivGroupId) return;
+      if (db) {
+        await db.from('anniversary_groups').delete().eq('id', activeAnnivGroupId);
+      }
+      closeModal('modal-anniv-group-edit');
+      closeModal('modal-anniv-group-detail');
+      await loadAnnivGroups();
+    }
+
+    // 기념일 항목 클릭 시: 초대장 보내기 + 선물하기 연동 + 공유 갤러리 추억 연동
+    function openAnnivItemDetailModal(eventIdx) {
+      activeAnnivEventIdx = eventIdx;
+      const group = annivGroupsData.find(g => String(g.id) === String(activeAnnivGroupId));
+      if (!group || !group.events || !group.events[eventIdx]) return;
+      const ev = group.events[eventIdx];
+
+      const today = parseLocalDate(getLocalTodayStr());
+      const target = parseLocalDate(ev.date);
+      const diff = Math.round((target - today) / (1000 * 60 * 60 * 24));
+      const badge = diff === 0 ? 'D-Day 🎉' : (diff > 0 ? `D-${diff}` : `D+${Math.abs(diff)}`);
+
+      document.getElementById('anniv-item-badge').textContent = badge;
+      document.getElementById('anniv-item-title').textContent = ev.title;
+      document.getElementById('anniv-item-date').textContent = `${ev.date} (${group.name})`;
+      document.getElementById('invite-plan-input').value = ev.plan || '';
+      document.getElementById('invite-message-input').value = `${ev.date} ${ev.title}에 초대합니다! 소중한 시간 함께 보내자 💕`;
+      document.getElementById('sent-invitation-preview').classList.add('hidden');
+
+      // 달력 일정 불러오기 옵션 채우기
+      const picker = document.getElementById('invite-calendar-picker');
+      picker.innerHTML = '<option value="">📅 달력에서 등록된 일정 불러오기...</option>' +
+        schedulesData.map(s => `<option value="${escapeHtml(`[${s.date}] ${s.title}${s.start_time ? ' (' + s.start_time + ')' : ''}`)}">${escapeHtml(`${s.date} - ${s.title}`)}</option>`).join('');
+
+      // 해당 기념일 날짜로 공유 갤러리(앨범)에 저장된 사진/동영상 연동 표시
+      renderLinkedAnnivMemories(ev.date);
+      openModal('modal-anniv-item-detail');
+    }
+
+    function applyCalendarScheduleToInvite() {
+      const val = document.getElementById('invite-calendar-picker').value;
+      if (val) document.getElementById('invite-plan-input').value = val;
+    }
+
+    async function sendAnnivInvitation() {
+      const group = annivGroupsData.find(g => String(g.id) === String(activeAnnivGroupId));
+      if (!group) return;
+      const ev = group.events[activeAnnivEventIdx];
+      const plan = document.getElementById('invite-plan-input').value.trim();
+      const msg = document.getElementById('invite-message-input').value.trim();
+
+      const fullInviteText =
+        `💌 [${group.name} - ${ev.title} 초대장]\n` +
+        `📅 날짜: ${ev.date}\n` +
+        `🗓️ 준비한 일정: ${plan || '함께하는 특별한 시간'}\n` +
+        `💬 메시지: ${msg}\n` +
+        `🎁 선물하기: 네이버 선물하기(shopping.naver.com/gift) / 카카오톡 선물하기(gift.kakao.com)`;
+
+      // 그룹 내 다른 공유 멤버들에게 초대장(편지함 연동) 실제 전송
+      const recipients = (group.shared_users || []).filter(u => u && u !== profile.myNick);
+      if (db && recipients.length) {
+        for (const r of recipients) {
+          await db.from('letters').insert({
+            sender_nickname: profile.myNick || '나',
+            receiver_nickname: r,
+            title: `💌 [초대장] ${ev.title} (${ev.date})`,
+            content: fullInviteText
+          });
+        }
+      }
+
+      document.getElementById('sent-invitation-text').textContent = fullInviteText;
+      document.getElementById('sent-invitation-preview').classList.remove('hidden');
+      alert(recipients.length
+        ? `${recipients.map(r => '#' + r).join(', ')}님에게 초대장이 발송되었습니다!`
+        : '초대장이 생성되었습니다! (공유 멤버를 추가하면 상대방에게도 실시간 발송됩니다)');
+    }
+
+    function renderLinkedAnnivMemories(dateStr) {
+      const box = document.getElementById('anniv-linked-memories');
+      const matched = albumsData.filter(a => a.date === dateStr);
+      if (!matched.length) {
+        box.innerHTML = '<p class="col-span-2 text-[11px] text-muted text-center py-3">이 기념일 날짜에 저장된 공유 갤러리 사진이 없습니다.</p>';
+        return;
+      }
+      box.innerHTML = matched.map(item => {
+        const { location, memo } = unpackAlbumMeta(item.location);
+        return `
+          <div onclick="openAlbumViewModal('${item.id}')" class="app-soft-box p-2 rounded-xl border cursor-pointer">
+            <div class="h-24 rounded-lg overflow-hidden bg-black/5">
+              ${item.media_type === 'video'
+                ? `<video src="${item.media_url}" class="w-full h-full object-cover"></video>`
+                : `<img src="${item.media_url}" alt="${escapeHtml(item.title)}" class="w-full h-full object-cover">`}
+            </div>
+            <div class="pt-1.5 text-[10px]">
+              <div class="font-bold text-main truncate">${escapeHtml(item.title)}</div>
+              ${location ? `<div class="text-accent truncate">📍 ${escapeHtml(location)}</div>` : ''}
+              ${memo ? `<div class="text-sub truncate">${escapeHtml(memo)}</div>` : ''}
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function openAlbumAddForAnnivDate() {
+      const group = annivGroupsData.find(g => String(g.id) === String(activeAnnivGroupId));
+      const ev = group && group.events ? group.events[activeAnnivEventIdx] : null;
+      openAlbumAddModal(ev ? ev.date : getLocalTodayStr());
+    }
+
+    // ==================== 3. 앨범 (공유 갤러리: 📍 장소 수정, 짧은 메모+이모티콘, 다운로드) ====================
+    function packAlbumMeta(location, memo) {
+      const loc = (location || '').trim();
+      const m = (memo || '').trim();
+      if (!loc && !m) return '';
+      return `${loc}||${m}`;
+    }
+
+    function unpackAlbumMeta(raw) {
+      if (!raw) return { location: '', memo: '' };
+      const parts = raw.split('||');
+      return {
+        location: parts[0] || '',
+        memo: parts.slice(1).join('||') || ''
+      };
+    }
+
+    function appendEmojiToInput(inputId, emoji) {
+      const el = document.getElementById(inputId);
+      el.value = (el.value ? el.value + ' ' : '') + emoji;
+      el.focus();
+    }
+
+    function openAlbumAddModal(presetDate) {
+      document.getElementById('album-file').value = '';
+      document.getElementById('album-title').value = '';
+      document.getElementById('album-date').value = presetDate || getLocalTodayStr();
+      document.getElementById('album-location').value = '';
+      document.getElementById('album-memo').value = '';
+      openModal('modal-album-add');
+    }
+
+    async function submitAlbum() {
+      const file = document.getElementById('album-file').files[0];
+      const title = document.getElementById('album-title').value.trim() || '소중한 추억';
+      const date = document.getElementById('album-date').value || getLocalTodayStr();
+      const location = document.getElementById('album-location').value.trim();
+      const memo = document.getElementById('album-memo').value.trim();
+      if (!file) return alert('사진 또는 동영상 파일을 선택해 주세요!');
+
+      const btn = document.getElementById('btn-upload-album');
+      btn.textContent = '올리는 중...';
+      btn.disabled = true;
+
+      const isVideo = file.type.startsWith('video/');
+      const ext = (file.name.split('.').pop() || (isVideo ? 'mp4' : 'jpg')).replace(/[^a-zA-Z0-9]/g, '');
+      const fileName = `${Date.now()}_${Math.random().toString(36).slice(2, 7)}.${ext}`;
+
+      const { error: uploadErr } = await db.storage.from('lovelog-media').upload(fileName, file);
+      if (uploadErr) {
+        btn.textContent = '올리기';
+        btn.disabled = false;
+        return alert('업로드 실패: Supabase Storage에 lovelog-media 버킷이 Public으로 설정되어 있는지 확인해 주세요!');
+      }
+
+      const { data: urlData } = db.storage.from('lovelog-media').getPublicUrl(fileName);
+      await db.from('albums').insert({
+        title,
+        date,
+        location: packAlbumMeta(location, memo),
+        media_type: isVideo ? 'video' : 'image',
+        media_url: urlData.publicUrl
+      });
+
+      btn.textContent = '올리기';
+      btn.disabled = false;
+      closeModal('modal-album-add');
+      await loadAlbums();
+
+      if (activeAnnivGroupId !== null && activeAnnivEventIdx !== null) {
+        renderLinkedAnnivMemories(date);
+      }
+    }
+
+    async function loadAlbums() {
+      if (!db) return;
+      const { data } = await db.from('albums').select('*').order('created_at', { ascending: false });
+      albumsData = data || [];
+      renderAlbumsGrid();
+    }
+
+    function renderAlbumsGrid() {
+      const grid = document.getElementById('album-grid');
+      if (!albumsData.length) {
+        grid.innerHTML = '<p class="col-span-2 text-xs text-center text-muted py-8">아직 올린 추억이 없어요. [+ 앨범 추가]로 첫 사진을 올려보세요! 📸</p>';
+        return;
+      }
+
+      grid.innerHTML = albumsData.map(item => {
+        const { location, memo } = unpackAlbumMeta(item.location);
+        return `
+          <div class="app-card p-2.5 rounded-2xl border shadow-sm flex flex-col justify-between">
+            <div>
+              <div onclick="openAlbumViewModal('${item.id}')" class="h-36 rounded-xl app-soft-box overflow-hidden relative cursor-pointer">
+                ${item.media_type === 'video'
+                  ? `<video src="${item.media_url}" class="w-full h-full object-cover"></video>`
+                  : `<img src="${item.media_url}" class="w-full h-full object-cover" alt="${escapeHtml(item.title)}">`}
+                <span class="absolute top-2 left-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded-md">${escapeHtml(item.date || '')}</span>
+                <button type="button" onclick="event.stopPropagation(); deleteItem('albums', '${item.id}')" class="absolute top-2 right-2 bg-black/50 text-white text-[9px] px-1.5 py-0.5 rounded-md">삭제</button>
+              </div>
+
+              <div class="pt-2 px-0.5 space-y-1">
+                <h4 class="text-xs font-bold text-main truncate">${escapeHtml(item.title)}</h4>
+
+                <!-- 사진 하단 📍 장소 이모티콘 (누르면 장소 즉시 추가/수정) -->
+                <button type="button" onclick="openAlbumMetaEditModal('${item.id}')" class="w-full text-left flex items-center gap-1 text-[11px] text-accent font-semibold hover:opacity-80 truncate">
+                  <span>📍</span>
+                  <span class="truncate">${location ? escapeHtml(location) : '장소 추가하기'}</span>
+                </button>
+
+                <!-- 장소 바로 아래 짧은 메모란 (누르면 이모티콘+짧은 메모 즉시 수정) -->
+                <button type="button" onclick="openAlbumMetaEditModal('${item.id}')" class="w-full text-left text-[10px] text-sub bg-black/[0.03] px-2 py-1 rounded-lg truncate">
+                  ${memo ? escapeHtml(memo) : '✏️ 짧은 메모 추가...'}
+                </button>
+              </div>
+            </div>
+
+            <!-- 사진 다운로드 버튼 -->
+            <button type="button" onclick="downloadAlbumMedia('${item.media_url}', '${escapeHtml(item.title)}')" class="mt-2 w-full app-badge border py-1 rounded-lg text-[10px] font-bold">
+              ⬇️ 다운로드
+            </button>
+          </div>`;
+      }).join('');
+    }
+
+    function openAlbumMetaEditModal(albumId) {
+      activeEditAlbumId = albumId;
+      const item = albumsData.find(a => String(a.id) === String(albumId));
+      if (!item) return;
+      const { location, memo } = unpackAlbumMeta(item.location);
+      document.getElementById('edit-album-location').value = location;
+      document.getElementById('edit-album-memo').value = memo;
+      openModal('modal-album-meta-edit');
+    }
+
+    async function saveAlbumMetaEdit() {
+      if (!activeEditAlbumId) return;
+      const loc = document.getElementById('edit-album-location').value.trim();
+      const memo = document.getElementById('edit-album-memo').value.trim();
+      if (db) {
+        await db.from('albums').update({ location: packAlbumMeta(loc, memo) }).eq('id', activeEditAlbumId);
+      }
+      closeModal('modal-album-meta-edit');
+      await loadAlbums();
+    }
+
+    function openAlbumViewModal(albumId) {
+      const item = albumsData.find(a => String(a.id) === String(albumId));
+      if (!item) return;
+      const { location, memo } = unpackAlbumMeta(item.location);
+      document.getElementById('view-album-title').textContent = item.title;
+      document.getElementById('view-album-location').textContent = `📍 ${location || '장소 미지정'}`;
+      document.getElementById('view-album-memo').textContent = memo;
+      document.getElementById('view-album-date').textContent = item.date || '';
+
+      const wrap = document.getElementById('view-album-media-wrap');
+      wrap.innerHTML = item.media_type === 'video'
+        ? `<video src="${item.media_url}" controls class="max-h-72 w-full object-contain"></video>`
+        : `<img src="${item.media_url}" alt="${escapeHtml(item.title)}" class="max-h-72 w-full object-contain">`;
+
+      document.getElementById('btn-view-album-download').onclick = () => downloadAlbumMedia(item.media_url, item.title);
+      openModal('modal-album-view');
+    }
+
+    async function downloadAlbumMedia(url, title) {
+      try {
+        const res = await fetch(url);
+        const blob = await res.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = `${(title || 'memory').replace(/[^a-zA-Z0-9가-힣_-]/g, '_')}`;
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        URL.revokeObjectURL(blobUrl);
+      } catch (e) {
+        window.open(url, '_blank');
+      }
+    }
+
+    // ==================== 4. 편지 (내장 멜로디 알림음 ON/OFF, 친구별 받은 편지함, 답장하기, 손그림 캔버스) ====================
+    function updateLetterSoundToggleUI() {
+      const btn = document.getElementById('btn-letter-sound-toggle');
+      if (!btn) return;
+      if (profile.letterSoundOn) {
+        btn.textContent = 'ON';
+        btn.className = 'px-3 py-1 rounded-full text-[11px] font-bold transition app-btn-primary';
+      } else {
+        btn.textContent = 'OFF';
+        btn.className = 'px-3 py-1 rounded-full text-[11px] font-bold transition app-card border text-sub';
+      }
+    }
+
+    function toggleLetterSound() {
+      profile.letterSoundOn = !profile.letterSoundOn;
+      localStorage.setItem('lovelog_profile_v2', JSON.stringify(profile));
+      updateLetterSoundToggleUI();
+      if (profile.letterSoundOn) playBuiltInLetterMelody(true);
+    }
+
+    function playBuiltInLetterMelody(forcePlay) {
+      if (!forcePlay && !profile.letterSoundOn) return;
+      try {
+        const AudioCtx = window.AudioContext || window.webkitAudioContext;
+        const ctx = new AudioCtx();
+        if (ctx.state === 'suspended') ctx.resume();
+        const now = ctx.currentTime;
+        const melody = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+        melody.forEach((freq, i) => {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(freq, now + i * 0.13);
+          gain.gain.setValueAtTime(0.14, now + i * 0.13);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.13 + 0.35);
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(now + i * 0.13);
+          osc.stop(now + i * 0.13 + 0.35);
+        });
+      } catch (e) {}
+    }
+
+    // 손그림 그리기 캔버스 초기화
+    function initDrawingCanvas() {
+      const canvas = document.getElementById('letter-draw-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let drawing = false;
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - rect.left) * (canvas.width / rect.width),
+          y: (clientY - rect.top) * (canvas.height / rect.height)
+        };
+      }
+
+      function startDraw(e) {
+        drawing = true;
+        canvasHasDrawing = true;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.moveTo(pos.x, pos.y);
+      }
+
+      function moveDraw(e) {
+        if (!drawing) return;
+        if (e.cancelable) e.preventDefault();
+        const pos = getPos(e);
+        ctx.lineWidth = brushSize;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+        ctx.strokeStyle = brushColor;
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+      }
+
+      function endDraw() {
+        drawing = false;
+      }
+
+      canvas.addEventListener('mousedown', startDraw);
+      canvas.addEventListener('mousemove', moveDraw);
+      window.addEventListener('mouseup', endDraw);
+
+      canvas.addEventListener('touchstart', startDraw, { passive: false });
+      canvas.addEventListener('touchmove', moveDraw, { passive: false });
+      canvas.addEventListener('touchend', endDraw);
+    }
+
+    function setBrushColor(color) { brushColor = color; }
+    function setBrushSize(size) { brushSize = size; }
+
+    function clearDrawingCanvas() {
+      const canvas = document.getElementById('letter-draw-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      canvasHasDrawing = false;
+    }
+
+    function openLetterWriteModal(presetReceiver) {
+      document.getElementById('letter-sender').value = profile.myNick || '';
+      document.getElementById('letter-receiver').value = presetReceiver ? `#${cleanNick(presetReceiver)}` : '';
+      document.getElementById('letter-title').value = '';
+      document.getElementById('letter-content').value = '';
+      clearDrawingCanvas();
+
+      document.getElementById('letter-friend-quick-select').innerHTML = friendsList.map(f => `
+        <button type="button" onclick="document.getElementById('letter-receiver').value='#${escapeHtml(f)}'" class="app-card border px-2 py-0.5 rounded-full text-[10px] font-bold text-accent">#${escapeHtml(f)}</button>
+      `).join('');
+
+      openModal('modal-letter-write');
+    }
+
+    async function submitLetter() {
+      const sender = cleanNick(document.getElementById('letter-sender').value) || profile.myNick || '나';
+      const receiver = cleanNick(document.getElementById('letter-receiver').value);
+      const title = document.getElementById('letter-title').value.trim();
+      let content = document.getElementById('letter-content').value.trim();
+
+      if (!receiver) return alert('받는 친구의 #닉네임을 입력하거나 선택해 주세요!');
+      if (!title || !content) return alert('편지 제목과 내용을 입력해 주세요!');
+
+      const btn = document.getElementById('btn-submit-letter');
+      btn.textContent = '보내는 중...';
+      btn.disabled = true;
+
+      // 손그림 캔버스가 그려져 있으면 Storage에 업로드해 편지 본문에 첨부
+      if (canvasHasDrawing && db) {
+        try {
+          const canvas = document.getElementById('letter-draw-canvas');
+          const blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/png'));
+          if (blob) {
+            const drawFileName = `drawing_${Date.now()}.png`;
+            const { error: upErr } = await db.storage.from('lovelog-media').upload(drawFileName, blob);
+            if (!upErr) {
+              const { data: urlData } = db.storage.from('lovelog-media').getPublicUrl(drawFileName);
+              content += `\n__DRAWING__:${urlData.publicUrl}`;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (db) {
+        await db.from('letters').insert({
+          sender_nickname: sender,
+          receiver_nickname: receiver,
+          title,
+          content
+        });
+      }
+
+      if (!friendsList.includes(receiver) && receiver !== profile.myNick) {
+        friendsList.push(receiver);
+        localStorage.setItem('lovelog_friends_v2', JSON.stringify(friendsList));
+      }
+
+      btn.textContent = '편지 보내기';
+      btn.disabled = false;
+      closeModal('modal-letter-write');
+      await loadLetters();
+    }
+
+    function unpackLetterContent(rawContent) {
+      if (!rawContent) return { text: '', drawingUrl: '' };
+      const idx = rawContent.indexOf('\n__DRAWING__:');
+      if (idx === -1) return { text: rawContent, drawingUrl: '' };
+      return {
+        text: rawContent.slice(0, idx),
+        drawingUrl: rawContent.slice(idx + 13).trim()
+      };
+    }
+
+    async function loadLetters() {
+      if (!db) return;
+      const { data } = await db.from('letters').select('*').order('created_at', { ascending: false });
+      const my = profile.myNick;
+      lettersData = (data || []).filter(l => {
+        if (!my) return true;
+        return l.sender_nickname === my || l.receiver_nickname === my;
+      });
+      renderFriendMailboxes();
+    }
+
+    // 추가된 친구별 받은 편지함 생성 (시간순 단순 나열이 아닌 친구별 폴더 구성)
+    function renderFriendMailboxes() {
+      const box = document.getElementById('friend-mailbox-list');
+      const my = profile.myNick;
+
+      // 나에게 편지를 보낸 발신자 + 추가된 친구 목록 통합
+      const receivedFrom = lettersData
+        .filter(l => !my || l.receiver_nickname === my)
+        .map(l => l.sender_nickname)
+        .filter(Boolean);
+
+      const friendKeys = [...new Set([...friendsList, ...receivedFrom])].filter(n => n && n !== my);
+
+      if (!friendKeys.length) {
+        box.innerHTML = '<p class="text-xs text-center text-muted py-8">받은 편지함 친구가 없습니다.<br>상단 🔍 버튼으로 친구를 추가하거나 편지를 보내보세요 ✉️</p>';
+        return;
+      }
+
+      box.innerHTML = friendKeys.map(friendNick => {
+        const receivedMsgs = lettersData.filter(l =>
+          l.sender_nickname === friendNick && (!my || l.receiver_nickname === my)
+        );
+        const latest = receivedMsgs[0];
+        return `
+          <button type="button" onclick="openFriendLettersModal('${escapeHtml(friendNick)}')" class="w-full text-left app-card p-3.5 rounded-2xl border shadow-sm flex items-center justify-between gap-3 hover:opacity-90 transition">
+            <div class="flex items-center gap-3 min-w-0">
+              <div class="w-10 h-10 rounded-full app-badge border flex items-center justify-center text-lg shrink-0">💌</div>
+              <div class="min-w-0">
+                <div class="text-xs font-bold text-main truncate">#${escapeHtml(friendNick)} 님의 편지함</div>
+                <p class="text-[11px] text-sub truncate mt-0.5">${latest ? escapeHtml(latest.title) : '아직 받은 편지가 없습니다'}</p>
+              </div>
+            </div>
+            <span class="app-badge text-[11px] font-bold px-2.5 py-1 rounded-full border shrink-0">${receivedMsgs.length}통 ›</span>
+          </button>`;
+      }).join('');
+    }
+
+    function openFriendLettersModal(friendNick) {
+      const my = profile.myNick;
+      document.getElementById('friend-letters-modal-title').textContent = `💌 #${friendNick} 님이 보낸 편지`;
+      const msgs = lettersData.filter(l =>
+        l.sender_nickname === friendNick && (!my || l.receiver_nickname === my)
+      );
+
+      const threadEl = document.getElementById('friend-letters-thread');
+      if (!msgs.length) {
+        threadEl.innerHTML = `
+          <div class="text-center py-6 space-y-3">
+            <p class="text-xs text-muted">#${escapeHtml(friendNick)} 님에게 받은 편지가 아직 없습니다.</p>
+            <button type="button" onclick="closeModal('modal-letter-friend'); openLetterWriteModal('${escapeHtml(friendNick)}')" class="app-btn-primary px-4 py-2 rounded-xl text-xs font-bold">
+              ✉️ 먼저 편지 보내기
+            </button>
+          </div>`;
+      } else {
+        threadEl.innerHTML = msgs.map(m => {
+          const { text, drawingUrl } = unpackLetterContent(m.content);
+          const dateLabel = m.created_at ? m.created_at.slice(0, 10) : '';
+          return `
+            <div class="app-soft-box p-4 rounded-2xl border space-y-2.5">
+              <div class="flex items-center justify-between">
+                <h4 class="text-xs font-bold text-main">${escapeHtml(m.title)}</h4>
+                <div class="flex items-center gap-2">
+                  <span class="text-[10px] text-muted">${dateLabel}</span>
+                  <button type="button" onclick="deleteItem('letters', '${m.id}'); closeModal('modal-letter-friend')" class="text-[10px] text-rose-500">삭제</button>
+                </div>
+              </div>
+              <p class="text-xs text-main whitespace-pre-line leading-relaxed">${escapeHtml(text)}</p>
+              ${drawingUrl ? `<div class="rounded-xl overflow-hidden border bg-white p-1"><img src="${drawingUrl}" alt="손그림" class="w-full max-h-44 object-contain"></div>` : ''}
+              <!-- 수신된 메시지 각 창 아래에 답장하기 버튼 배치 -->
+              <button type="button" onclick="closeModal('modal-letter-friend'); openLetterWriteModal('${escapeHtml(friendNick)}')" class="w-full app-btn-primary py-2 rounded-xl text-xs font-bold shadow-sm">
+                ↩️ 답장하기
+              </button>
+            </div>`;
+        }).join('');
+      }
+
+      openModal('modal-letter-friend');
+    }
+
+    // ==================== 전체 데이터 로드 & 실시간 구독 ====================
+    async function loadAllData() {
+      if (!db) return;
+      await Promise.all([loadSchedules(), loadAnnivGroups(), loadAlbums(), loadLetters()]);
+    }
+
+    function subscribeRealtime() {
+      if (!db) return;
+      db.channel('couple-friends-realtime')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'schedules' }, () => loadSchedules())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'anniversary_groups' }, () => loadAnnivGroups())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'albums' }, () => loadAlbums())
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'letters' }, payload => {
+          loadLetters();
+          if (payload.eventType === 'INSERT' && payload.new.receiver_nickname === profile.myNick && payload.new.sender_nickname !== profile.myNick) {
+            playBuiltInLetterMelody(false);
+            if ('Notification' in window && Notification.permission === 'granted') {
+              try {
+                new Notification(`새 편지가 도착했어요 💌 (#${payload.new.sender_nickname})`, { body: payload.new.title });
+              } catch (e) {}
+            }
+          }
+        })
+        .subscribe();
+    }
+
+    async function deleteItem(table, id) {
+      if (!db || !id) return;
+      await db.from(table).delete().eq('id', id);
+      await loadAllData();
+      if (table === 'schedules' && !document.getElementById('modal-day-detail').classList.contains('hidden')) {
+        openDayDetailModal(selectedDateStr);
+      }
+    }
+  </script>
+</body>
+</html>
