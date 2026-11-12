@@ -3,9 +3,9 @@ self.addEventListener('push', function (event) {
   const title = data.title || '우리 둘만의 공간 💕';
   const options = {
     body: data.body || '새로운 알림이 도착했어요!',
-    icon: '/icon.png',
-    badge: '/icon.png',
-    data: { url: data.url || '/' }
+    icon: './icon.png',
+    badge: './icon.png',
+    data: { url: data.url || './' }
   };
 
   event.waitUntil(self.registration.showNotification(title, options));
